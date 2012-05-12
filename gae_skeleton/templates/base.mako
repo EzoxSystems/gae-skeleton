@@ -22,6 +22,9 @@
                 <div id="appnameapp"></div>
             </div>
         </div>
+        <div class="footer">
+          <center><strong>View the source at:</strong> <a href="https://github.com/ezoxsystems/gae-skeleton">https://github.com/ezoxsystems/gae-skeleton</a></center>
+        </div>
         <script type="application/javascript" src="/static/script/libs.js"></script>
         <script type="application/javascript" src="/static/script/template.js"></script>
         <script type="application/javascript" src="/static/script/appname.js"></script>
