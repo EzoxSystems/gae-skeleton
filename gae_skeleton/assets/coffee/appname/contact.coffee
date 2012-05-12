@@ -60,7 +60,7 @@ class App.Appname.Views.ContactInfoEdit extends Backbone.View
     initialize: ->
         @model.bind('change', @render, this)
         @model.bind('destroy', @remove, this)
-        @model.edit_view = this
+        @model.editView = this
 
     render: =>
         @$el.html(@template(@model.toJSON()))
