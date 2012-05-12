@@ -15,20 +15,13 @@ limitations under the License.
 ###
 
 Backbone.View.prototype.close = (() ->
-    this.remove()
-    this.unbind()
+    @remove()
+    @unbind()
     App.Appname.Events.trigger('closing', this)
-    this.off()
-    if this.onClose
-        this.onClose()
+    @off()
+    if @onClose
+        @onClose()
 )
-
-extend = (obj, mixin) ->
-    obj[name] = method for name, method of mixin
-    return obj
-
-include = (klass, mixin) ->
-    extend klass.prototype, mixin
 
 window.App = (() ->
     module: (() ->
