@@ -129,6 +129,8 @@ class App.Appname.Views.EditView extends Backbone.View
         @model.clear()
         @render(@is_modal)
 
+        return false
+
     render: (as_modal) =>
         @is_modal = as_modal
 
@@ -148,11 +150,15 @@ class App.Appname.Views.EditView extends Backbone.View
     save: =>
         App.Appname.Events.trigger(@modelType.name + ':save', @model, this)
 
+        return false
+
     updateOnEnter: (e) =>
         if e.keyCode == 13
             @save()
             if @model.isValid()
                 @close
+
+            return false
 
 
 class App.Appname.Views.ListView extends Backbone.View

@@ -4,8 +4,7 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
+# #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -51,10 +50,11 @@ class App.Appname.Collections.PersonList extends Backbone.Collection
 class App.Appname.Views.PersonEdit extends App.Appname.Views.EditView
     template: JST['person/edit']
     modelType: App.Appname.Models.Person
+    focus_button: 'input#name'
 
     events:
         "click a.destroy": "clear"
-        "click a.add_contact": "addContactInfo"
+        "click button.add_contact": "addContactInfo"
         "click .save": "save"
         "keypress .edit": "updateOnEnter"
         "click .remove-button": "clear"
@@ -86,7 +86,23 @@ class App.Appname.Views.PersonEdit extends App.Appname.Views.EditView
         @model.contact_info.add(newModel)
 
         editView = new App.Appname.Views.ContactInfoEdit({model: newModel})
-        @$el.find('fieldset.contact_info').append(editView.render().el)
+        rendered = editView.render()
+        @$el.find('fieldset.contact_info').append(rendered.el)
+
+        rendered.$el.find('input.type').focus()
+
+        return false
+
+    updateOnEnter: (e) =>
+        focusItem = $("*:focus")
+
+        if e.keyCode == 13
+            if focusItem.hasClass('contact')
+                @addContactInfo()
+                return false
+
+        return super(e)
+
 
 class App.Appname.Views.PersonApp extends App.Appname.Views.ModelApp
     template: JST['person/view']
