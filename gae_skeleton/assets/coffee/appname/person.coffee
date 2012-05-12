@@ -50,7 +50,7 @@ class App.Appname.Collections.PersonList extends Backbone.Collection
 class App.Appname.Views.PersonEdit extends App.Appname.Views.EditView
     template: JST['person/edit']
     modelType: App.Appname.Models.Person
-    focus_button: 'input#name'
+    focusButton: 'input#name'
 
     events:
         "click a.destroy": "clear"
@@ -62,7 +62,7 @@ class App.Appname.Views.PersonEdit extends App.Appname.Views.EditView
 
     save: =>
         @model.contact_info.each((info) ->
-            info.edit_view.close()
+            info.editView.close()
         )
         @model.save(
             name: @$('input.name').val()
@@ -71,15 +71,16 @@ class App.Appname.Views.PersonEdit extends App.Appname.Views.EditView
 
         super()
 
-    render: (as_modal) =>
+    render: (asModal) =>
         el = @$el
         el.html(@template(@model.toJSON()))
+
         @model.contact_info.each((info, i) ->
             editView = new App.Appname.Views.ContactInfoEdit({model: info})
             el.find('fieldset.contact_info').append(editView.render().el)
         )
 
-        return super(as_modal)
+        return super(asModal)
 
     addContactInfo: () =>
         newModel = new @model.contact_info.model()

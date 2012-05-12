@@ -38,27 +38,27 @@ class App.Appname.Views.ModelApp extends App.Appname.Views.App
 
     render: =>
         @searchMode = true
-        App.Appname.Events.bind(@modelType.name + ":add", @addItem, this)
-        App.Appname.Events.bind(@modelType.name + ":edit", @editItem, this)
+        App.Appname.Events.bind("#{@modelType.name}:add", @addItem, this)
+        App.Appname.Events.bind("#{@modelType.name}:edit", @editItem, this)
 
         @$el.html(@template())
 
         @listView = new App.Appname.Views.ListApp(
-            @modelType.name + "List", @$("#" + @modelType.name + "list"))
+            "#{@modelType.name}List", @$("##{@modelType.name}list"))
 
         $("#add_new").focus()
         return this
 
     editItem: (model) =>
-        App.Appname.Events.bind(@modelType.name + ":save", this.editSave, this)
+        App.Appname.Events.bind("#{@modelType.name}:save", this.editSave, this)
 
         @addClose()
         @editView = new @form({model: model})
         el = @editView.render(true).$el
         el.modal('show')
         el.find('input.code').focus()
-        if @editView.focus_button
-            el.find(@editView.focus_button).focus()
+        if @editView.focusButton
+            el.find(@editView.focusButton).focus()
 
     addItem: (model) =>
         @listView.addOne(model)
@@ -70,9 +70,9 @@ class App.Appname.Views.ModelApp extends App.Appname.Views.App
             @addClose()
 
     addOpen: =>
-        App.Appname.Events.bind(@modelType.name + ":save", this.addSave, this)
+        App.Appname.Events.bind("#{@modelType.name}:save", this.addSave, this)
         App.Appname.Events.unbind(
-            @modelType.name + ":save", this.editSave, this)
+            "#{@modelType.name}:save", this.editSave, this)
 
         @searchMode = false
 
@@ -82,30 +82,33 @@ class App.Appname.Views.ModelApp extends App.Appname.Views.App
         el = @addView.render(false).el
         $("#add_area").html(el)
 
-        if @addView.focus_button
-            $("#add_area").find(@addView.focus_button).focus()
+        if @addView.focusButton
+            $("#add_area").find(@addView.focusButton).focus()
 
         $("#add_new").text('Search Mode')
 
     addClose: =>
-        App.Appname.Events.unbind(@modelType.name + ":save", this.addSave, this)
+        App.Appname.Events.unbind("#{@modelType.name}:save", this.addSave, this)
 
         @searchMode = true
 
         if @addView
             @addView.close()
+
         @addView = null
+
         this.$("#add_new").text('Add Mode')
                           .focus()
 
     addSave: (model) =>
         valid = @addView.model.isValid()
+
         if valid
-            App.Appname.Events.trigger(@modelType.name + ':add', model)
+            App.Appname.Events.trigger("#{@modelType.name}:add", model)
             @addOpen()
 
     editSave: (model) =>
-        App.Appname.Events.unbind(@modelType.name + ":save", this.editSave, this)
+        App.Appname.Events.unbind("#{@modelType.name}:save", this.editSave, this)
         @editView.$el.modal('hide')
         @editView.close()
         @editView = null
@@ -118,38 +121,39 @@ class App.Appname.Views.ModelApp extends App.Appname.Views.App
         if @editView
             @editView.close()
 
+        @listView.close()
+
 
 class App.Appname.Views.EditView extends Backbone.View
     tagName: "div"
     modelType: null
-    is_modal: false
-    focus_button: null
+    isModal: false
+    focusButton: null
 
     clear: =>
         @model.clear()
-        @render(@is_modal)
+        @render(@isModal)
 
         return false
 
-    render: (as_modal) =>
-        @is_modal = as_modal
+    render: (asModal) =>
+        @isModal = asModal
 
-        header = this.$("#editheader")
+        header = @$("#editheader")
 
-        if as_modal
+        if asModal
             @$el.attr('class', 'modal')
 
             this.$("#editheadercontainer").prepend(
                 $("<button class='close' data-dismiss='modal'>&times;</button>"))
-            header.html("Edit " + header.text())
+            header.html("Edit #{header.text()}")
         else
-            header.html("Add " + header.text())
+            header.html("Add #{header.text()}")
 
         return this
 
     save: =>
-        App.Appname.Events.trigger(@modelType.name + ':save', @model, this)
-
+        App.Appname.Events.trigger("#{@modelType.name}:save", @model, this)
         return false
 
     updateOnEnter: (e) =>
@@ -178,7 +182,7 @@ class App.Appname.Views.ListView extends Backbone.View
         return this
 
     edit: =>
-        App.Appname.Events.trigger(@modelType.name + ":edit", @model, this)
+        App.Appname.Events.trigger("#{@modelType.name}:edit", @model, this)
 
     delete: =>
         @model.destroy()
@@ -191,9 +195,11 @@ class App.Appname.Views.ListApp extends App.Appname.Views.App
             @el = el
         else
             @el = @$el
+
         if not collection
             collection = view
-        @model_view = App.Appname.Views[view]
+
+        @modalView = App.Appname.Views[view]
         @collection = new App.Appname.Collections[collection]
         @collection.bind('add', @addOne, this)
         @collection.bind('reset', @addAll, this)
@@ -201,7 +207,7 @@ class App.Appname.Views.ListApp extends App.Appname.Views.App
         @collection.fetch()
 
     addOne: (object) =>
-        view = new @model_view({model: object})
+        view = new @modalView({model: object})
         object.view = view
         @el.append(view.render().el)
 

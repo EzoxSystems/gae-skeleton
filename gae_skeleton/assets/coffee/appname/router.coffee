@@ -35,6 +35,5 @@ class App.Appname.Router extends Backbone.Router
         $(@el).append(@currentView.render().el)
 
     showPerson: () =>
-        console.log('calling person')
         @swap(App.Appname.Views.PersonApp)
 
