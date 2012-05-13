@@ -33,6 +33,11 @@ def make_app(app_name, path=''):
     apps.create_app(app_name, path)
 
 #update
+def update_app(app_name, path=''):
+    from setup import apps
+
+    print 'updating %s' % (app_name,)
+    apps.update_app(app_name, path)
 #install
 #dev
 

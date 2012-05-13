@@ -14,28 +14,51 @@ TEMPLATE_DIRECTORY = os.path.join(BASE_LOCATION, 'skel', 'template')
 
 
 def create_app(app_name, path=''):
-    if path:
-        app_location = os.path.join(BASE_LOCATION, app_name)
-    else:
-        app_location = os.path.join(BASE_LOCATION, app_name)
+    app_location = _get_app_location(app_name, path)
 
     if not os.path.exists(app_location):
         os.makedirs(app_location)
 
-    copy_files(app_name, TEMPLATE_DIRECTORY, app_location)
+    _copy_files(app_name, TEMPLATE_DIRECTORY, app_location)
 
     lib_location = os.path.join(app_location, 'lib')
     if not os.path.exists(lib_location):
         os.makedirs(lib_location)
 
-    copy_files(
+    _copy_files(
         app_name, os.path.join(
             BASE_LOCATION, 'skel'), lib_location, DIRECTORIES_TO_IGNORE)
 
-    rename(app_name, app_location)
+    _rename(app_name, app_location)
 
 
-def copy_files(app_name, root_src_dir, root_dst_dir, dirs_to_ignore=None,
+def update_app(app_name, path=''):
+    app_location = _get_app_location(app_name, path)
+
+    update_paths_to_ignore = (
+        os.path.join(
+            BASE_LOCATION, 'skel', 'local', 'scripts', 'assets',
+            'app_assets.py')
+    )
+
+    lib_location = os.path.join(app_location, 'lib')
+    if not os.path.exists(lib_location):
+        os.makedirs(lib_location)
+
+    _copy_files(
+        app_name, os.path.join(
+            BASE_LOCATION, 'skel'),
+        lib_location, DIRECTORIES_TO_IGNORE, update_paths_to_ignore)
+
+
+def _get_app_location(app_name, path=''):
+    if path:
+        return os.path.join(BASE_LOCATION, app_name)
+
+    return os.path.join(BASE_LOCATION, app_name)
+
+
+def _copy_files(app_name, root_src_dir, root_dst_dir, dirs_to_ignore=None,
                files_to_ignore=None):
 
     if not dirs_to_ignore:
@@ -82,8 +105,8 @@ def copy_files(app_name, root_src_dir, root_dst_dir, dirs_to_ignore=None,
                 ['mv', os.path.join(dst_dir, '.rename.tmp'), dst_file])
 
 
-def rename(app_name, destination_directory):
-    def _rename(item, name):
+def _rename(app_name, destination_directory):
+    def __rename(item, name):
         os.rename(
             os.path.join(destination_directory, item),
             os.path.join(destination_directory, name))
@@ -91,13 +114,10 @@ def rename(app_name, destination_directory):
     def _run(items):
         for item in items:
             if 'appname' in item:
-                _rename(item, app_name.lower())
+                __rename(item, app_name.lower())
             if 'Appname' in item:
-                _rename(item, app_name)
+                __rename(item, app_name)
 
     for _, dirs, files in os.walk(destination_directory):
         _run(dirs)
         _run(files)
-
-#def update_app(app_name, path=''):
-    #update_paths_to_ignore = ()
