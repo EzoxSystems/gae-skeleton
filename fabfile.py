@@ -24,7 +24,12 @@ from fabric.api import local
 sys.path.append(os.path.join('lib', 'local', 'scripts'))
 
 
-def dev():
+#make_app
+#update
+#install
+#dev
+
+def dev(appname):
     import assets
     assets.build(debug=True, cache=False)
     assets.watch(debug=True, cache=False)

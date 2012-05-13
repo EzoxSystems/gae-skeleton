@@ -39,24 +39,32 @@ from webassets import Environment
 from webassets.script import CommandLineEnvironment
 
 
-INPUT_FILES = path.join(os.getcwdu(), 'assets')
-OUTPUT_FILES = path.join(os.getcwdu(), 'static')
+BASE_LOCATION = os.getcwdu()
+INPUT_FILES = path.join(BASE_LOCATION, 'assets')
 
 
 
-def _bundle_images(env):
+def _bundle_images(app, env):
     """Push images into static."""
     #TODO: add png crush or something similar
-
     import shutil
-    try:
-        shutil.rmtree(path.join(OUTPUT_FILES, 'img'))
-    except:
-        pass
-    shutil.copytree(path.join(INPUT_FILES, 'img'), path.join(OUTPUT_FILES, 'img'))
+
+    root_src_dir = path.join(INPUT_FILES, 'img')
+    root_dst_dir = path.join(BASE_LOCATION, app, 'static', 'img')
+
+    for src_dir, dirs, files in os.walk(root_src_dir):
+        dst_dir = src_dir.replace(root_src_dir, root_dst_dir)
+        if not os.path.exists(dst_dir):
+            os.mkdir(dst_dir)
+        for file_ in files:
+            src_file = os.path.join(src_dir, file_)
+            dst_file = os.path.join(dst_dir, file_)
+            if os.path.exists(dst_file):
+                os.remove(dst_file)
+            shutil.move(src_file, dst_dir)
 
 
-def _bundle_app_coffee(env, debug=False):
+def _bundle_app_coffee(app, env, debug=False):
     """Compile the apps coffeescript and bundle it into appname.js"""
     COFFEE_PATH = 'coffee'
     APP_PATH = path.join(COFFEE_PATH, 'appname')
@@ -72,7 +80,7 @@ def _bundle_app_coffee(env, debug=False):
     all_js = Bundle(
         *scripts,
         filters='coffeescript',
-        output=path.join('..', 'static', 'script', 'appname.js')
+        output=path.join('..', '..', app, 'static', 'script', 'appname.js')
     )
     env.add(all_js)
 
@@ -80,13 +88,13 @@ def _bundle_app_coffee(env, debug=False):
         all_js.filters = 'closure_js'
 
 
-def _bundle_app_jsts(env, debug=False):
+def _bundle_app_jsts(app, env, debug=False):
     """Compile and bundle JSTs into template.js"""
     all_js = Bundle(
         path.join('jst', '*.jst'),
         path.join('jst', '*', '*.jst'),
         filters='jst',
-        output=path.join('..', 'static', 'script', 'template.js')
+        output=path.join('..', '..', app, 'static', 'script', 'template.js')
     )
     env.add(all_js)
 
@@ -94,7 +102,7 @@ def _bundle_app_jsts(env, debug=False):
         all_js.filters = 'closure_js'
 
 
-def _bundle_3rd_party_js(env, debug=False):
+def _bundle_3rd_party_js(app, env, debug=False):
     """Combine thrid party js libs into libs.js.
 
     For debug, they are left uncompressed.  For production the minified
@@ -110,7 +118,7 @@ def _bundle_3rd_party_js(env, debug=False):
             path.join(JSPATH, 'backbone.js'),
             path.join(JSPATH, 'bootstrap.js'),
             path.join(JSPATH, 'bootstrap-typeahead-improved.js'),
-            output=path.join('..', 'static', 'script', 'libs.js')
+            output=path.join('..', '..', app, 'static', 'script', 'libs.js')
         )
     else:
         JSPATH = path.join(JSPATH, 'min')
@@ -121,7 +129,7 @@ def _bundle_3rd_party_js(env, debug=False):
             path.join(JSPATH, 'backbone-min.js'),
             path.join(JSPATH, 'bootstrap-min.js'),
             path.join(JSPATH, 'bootstrap-typeahead-improved-min.js'),
-            output=path.join('..', 'static', 'script', 'libs.js')
+            output=path.join('..', '..', app, 'static', 'script', 'libs.js')
         )
 
     env.add(all_js)
@@ -129,27 +137,27 @@ def _bundle_3rd_party_js(env, debug=False):
         all_js.build()
 
 
-def _bundle_3rd_party_css(env, debug=False):
+def _bundle_3rd_party_css(app, env, debug=False):
     """Bundle any thrid party CSS files."""
     if debug:
         bundle = Bundle(
                 path.join('css', 'bootstrap.css'),
-                output=path.join('..', 'static', 'css', 'lib.css')
+                output=path.join('..', '..', app, 'static', 'css', 'lib.css')
             )
     else:
         bundle = Bundle(
                 path.join('css', 'min', 'bootstrap.min.css'),
-                output=path.join('..', 'static', 'css', 'lib.css')
+                output=path.join('..', '..', app, 'static', 'css', 'lib.css')
             )
 
     env.add(bundle)
 
 
-def _bundle_app_less(env, debug):
+def _bundle_app_less(app, env, debug):
     """Compile and minify appname's less files into appname.css."""
     bundle = Bundle(
         Bundle(path.join('less', 'appname.less'), filters='less'),
-        output=path.join('..', 'static', 'css', 'appname.css')
+        output=path.join('..', '..', app, 'static', 'css', 'appname.css')
     )
 
     if not debug:
@@ -158,9 +166,9 @@ def _bundle_app_less(env, debug):
     env.add(bundle)
 
 
-def _setup_env(debug=True, cache=True):
+def _setup_env(app, debug=True, cache=True):
     """Setup the webassets environment."""
-    env = Environment(INPUT_FILES, OUTPUT_FILES)
+    env = Environment(INPUT_FILES, path.join(BASE_LOCATION, app))
     # We use underscore's templates by default.
     env.config['JST_COMPILER'] = '_.template'
     if debug:
@@ -173,16 +181,16 @@ def _setup_env(debug=True, cache=True):
     env.cache = cache
 
     #javascript
-    _bundle_app_jsts(env, debug)
-    _bundle_app_coffee(env, debug)
-    _bundle_3rd_party_js(env, debug)
+    _bundle_app_jsts(app, env, debug)
+    _bundle_app_coffee(app, env, debug)
+    _bundle_3rd_party_js(app, env, debug)
 
     #css
-    _bundle_app_less(env, debug)
-    _bundle_3rd_party_css(env, debug)
+    _bundle_app_less(app, env, debug)
+    _bundle_3rd_party_css(app, env, debug)
 
     #images
-    _bundle_images(env)
+    _bundle_images(app, env)
 
     return env
 
@@ -195,15 +203,15 @@ def _load_logger():
      return log
 
 
-def build(debug=True, cache=True):
+def build(location, debug=True, cache=True):
     env = _setup_env(debug, cache)
     log = _load_logger()
     cmdenv = CommandLineEnvironment(env, log)
 
     cmdenv.rebuild()
 
-def watch(debug=False, cache=False):
-    env = _setup_env(debug, cache)
+def watch(location, debug=False, cache=False):
+    env = _setup_env(location, debug, cache)
     log = _load_logger()
     cmdenv = CommandLineEnvironment(env, log)
 
