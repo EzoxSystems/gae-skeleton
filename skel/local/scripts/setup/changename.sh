@@ -8,12 +8,19 @@ fi
 
 _LAPP=`echo $_APP | tr 'A-Z' 'a-z'`
 
-for _FILE in `grep -Rl appname *`; do
-    if [[ "$_FILE" == "changename.sh" ]]; then
+_my_file="$0"
+
+for _FILE in `grep -Rl . *`; do
+
+    if [[ "$_FILE" == "$_my_file" ]]; then
+        echo "**** Ignore script ****"
+        echo "$_FILE"
         continue
     fi
 
-    sed -e "s/Appname/$_APP/g" -e "s/appname/$_LAPP/g" "$_FILE" > .rename.tmp
+    echo $_FILE
+
+    sed -e "s/Demo/$_APP/g" -e "s/demo/$_LAPP/g" "$_FILE" > .rename.tmp
     mv .rename.tmp "$_FILE"
 done
 

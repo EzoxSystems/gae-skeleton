@@ -23,9 +23,7 @@ This is to ensure files are included in the correct order in the compiled
 javascript.
 
 Some common things to do here:
-    Compile coffeescript, uglify the resultant js into appname.js.
-    Compile your JST templates into template.js.
-    Compile and minify your less into appname.css.
+    Compile coffeescript, uglify the resultant js into demo.js.
     Combine third party js into one libs.js package.
 """
 
@@ -42,8 +40,8 @@ from . import INPUT_FILES
 from . import _bundle_images
 
 
-def _bundle_app_coffee(app, env, debug=False):
-    """Compile the apps coffeescript and bundle it into appname.js"""
+def _bundle_app_coffee(app_path, env, debug=False):
+    """Compile the apps coffeescript and bundle it into demo.js"""
     COFFEE_PATH = 'coffee'
     scripts = (
         path.join(COFFEE_PATH, 'nested.coffee'),
@@ -54,7 +52,7 @@ def _bundle_app_coffee(app, env, debug=False):
     all_js = Bundle(
         *scripts,
         filters='coffeescript',
-        output=path.join('..', '..', app, 'static', 'script', 'skel.js')
+        output=path.join(app_path, 'script', 'skel.js')
     )
     env.add(all_js)
 
@@ -62,7 +60,7 @@ def _bundle_app_coffee(app, env, debug=False):
         all_js.filters = 'closure_js'
 
 
-def _bundle_3rd_party_js(app, env, debug=False):
+def _bundle_3rd_party_js(app_path, env, debug=False):
     """Combine thrid party js libs into libs.js.
 
     For debug, they are left uncompressed.  For production the minified
@@ -78,7 +76,7 @@ def _bundle_3rd_party_js(app, env, debug=False):
             path.join(JSPATH, 'backbone.js'),
             path.join(JSPATH, 'bootstrap.js'),
             path.join(JSPATH, 'bootstrap-typeahead-improved.js'),
-            output=path.join('..', '..', app, 'static', 'script', 'libs.js')
+            output=path.join(app_path, 'script', 'libs.js')
         )
     else:
         JSPATH = path.join(JSPATH, 'min')
@@ -89,7 +87,7 @@ def _bundle_3rd_party_js(app, env, debug=False):
             path.join(JSPATH, 'backbone-min.js'),
             path.join(JSPATH, 'bootstrap-min.js'),
             path.join(JSPATH, 'bootstrap-typeahead-improved-min.js'),
-            output=path.join('..', '..', app, 'static', 'script', 'libs.js')
+            output=path.join(app_path, 'script', 'libs.js')
         )
 
     env.add(all_js)
@@ -97,25 +95,35 @@ def _bundle_3rd_party_js(app, env, debug=False):
         all_js.build()
 
 
-def _bundle_3rd_party_css(app, env, debug=False):
+def _bundle_3rd_party_css(app_path, env, debug=False):
     """Bundle any thrid party CSS files."""
     if debug:
         bundle = Bundle(
                 path.join('css', 'bootstrap.css'),
-                output=path.join('..', '..', app, 'static', 'css', 'lib.css')
+                output=path.join(app_path, 'css', 'lib.css')
             )
     else:
         bundle = Bundle(
                 path.join('css', 'min', 'bootstrap.min.css'),
-                output=path.join('..', '..', app, 'static', 'css', 'lib.css')
+                output=path.join(app_path, 'css', 'lib.css')
             )
 
     env.add(bundle)
 
 
-def _setup_env(app, debug=True, cache=True):
+def _setup_env(app='', debug=True, cache=True):
     """Setup the webassets environment."""
-    env = Environment(INPUT_FILES, path.join(BASE_LOCATION, app))
+    if app:
+        app_path = path.join('..', app, 'static')
+        env = Environment(
+            path.join(INPUT_FILES, '..', '..', 'skel_assets'),
+            path.join(BASE_LOCATION, '..'))
+    else:
+        app_path = path.join('..', 'static')
+        env = Environment(
+            path.join(INPUT_FILES, '..', '..', 'skel_assets'),
+            path.join(BASE_LOCATION))
+
     # We use underscore's templates by default.
     env.config['JST_COMPILER'] = '_.template'
     if debug:
@@ -128,14 +136,14 @@ def _setup_env(app, debug=True, cache=True):
     env.cache = cache
 
     #javascript
-    _bundle_app_coffee(app, env, debug)
-    _bundle_3rd_party_js(app, env, debug)
+    _bundle_app_coffee(app_path, env, debug)
+    _bundle_3rd_party_js(app_path, env, debug)
 
     #css
-    _bundle_3rd_party_css(app, env, debug)
+    _bundle_3rd_party_css(app_path, env, debug)
 
     #images
-    _bundle_images(app, env)
+    _bundle_images(app, env, is_skel=True)
 
     return env
 
@@ -148,15 +156,15 @@ def _load_logger():
      return log
 
 
-def build(location, debug=True, cache=True):
-    env = _setup_env(debug, cache)
+def build(app='', debug=True, cache=True):
+    env = _setup_env(app, debug, cache)
     log = _load_logger()
     cmdenv = CommandLineEnvironment(env, log)
 
     cmdenv.rebuild()
 
-def watch(location, debug=False, cache=False):
-    env = _setup_env(location, debug, cache)
+def watch(app='', debug=False, cache=False):
+    env = _setup_env(app, debug, cache)
     log = _load_logger()
     cmdenv = CommandLineEnvironment(env, log)
 

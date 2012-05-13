@@ -23,9 +23,9 @@ This is to ensure files are included in the correct order in the compiled
 javascript.
 
 Some common things to do here:
-    Compile coffeescript, uglify the resultant js into appname.js.
+    Compile coffeescript, uglify the resultant js into demo.js.
     Compile your JST templates into template.js.
-    Compile and minify your less into appname.css.
+    Compile and minify your less into demo.css.
     Combine third party js into one libs.js package.
 """
 
@@ -43,17 +43,21 @@ from . import _bundle_images
 
 
 def _bundle_app_coffee(app, env, debug=False):
-    """Compile the apps coffeescript and bundle it into appname.js"""
+    """Compile the apps coffeescript and bundle it into demo.js"""
     COFFEE_PATH = 'coffee'
-    APP_PATH = path.join(COFFEE_PATH, app)
     scripts = (
-        path.join(APP_PATH, 'menu.coffee'),
-        path.join(APP_PATH, 'router.coffee'),
+        path.join(COFFEE_PATH, 'app.coffee'),
+        path.join(COFFEE_PATH, 'menu.coffee'),
+        path.join(COFFEE_PATH, 'router.coffee'),
     )
+
+    if not scripts:
+        return
+
     all_js = Bundle(
         *scripts,
         filters='coffeescript',
-        output=path.join('..', '..', app, 'static', 'script', 'appname.js')
+        output=path.join('..', '..', app, 'static', 'script', '%s.js' % (app,))
     )
     env.add(all_js)
 
@@ -83,14 +87,26 @@ def _bundle_3rd_party_js(app, env, debug=False):
     of each library.
     """
     JSPATH = path.join('js', 'lib')
+
     if debug:
+        scripts = ()
+        if not scripts:
+            return
+
         all_js = Bundle(
-           output=path.join('..', '..', app, 'static', 'script', 'libs.js')
+            *scripts,
+            output=path.join('..', '..', app, 'static', 'script', 'libs.js')
         )
     else:
         JSPATH = path.join(JSPATH, 'min')
+
+        scripts = ()
+        if not scripts:
+            return
+
         all_js = Bundle(
-           output=path.join('..', '..', app, 'static', 'script', 'libs.js')
+            *scripts,
+            output=path.join('..', '..', app, 'static', 'script', 'libs.js')
         )
 
     env.add(all_js)
@@ -101,11 +117,21 @@ def _bundle_3rd_party_js(app, env, debug=False):
 def _bundle_3rd_party_css(app, env, debug=False):
     """Bundle any thrid party CSS files."""
     if debug:
+        items = ()
+        if not items:
+            return
+
         bundle = Bundle(
+                *items,
                 output=path.join('..', '..', app, 'static', 'css', 'lib.css')
             )
     else:
+        items = ()
+        if not items:
+            return
+
         bundle = Bundle(
+                *items,
                 output=path.join('..', '..', app, 'static', 'css', 'lib.css')
             )
 
@@ -113,7 +139,7 @@ def _bundle_3rd_party_css(app, env, debug=False):
 
 
 def _bundle_app_less(app, env, debug):
-    """Compile and minify appname's less files into appname.css."""
+    """Compile and minify demo's less files into demo.css."""
     bundle = Bundle(
         Bundle(path.join('less', '%s.less' % (app,)), filters='less'),
         output=path.join('..', '..', app, 'static', 'css', '%s.css' % (app,))
@@ -162,15 +188,15 @@ def _load_logger():
      return log
 
 
-def build(location, debug=True, cache=True):
-    env = _setup_env(debug, cache)
+def build(app='', debug=True, cache=True):
+    env = _setup_env(app, debug, cache)
     log = _load_logger()
     cmdenv = CommandLineEnvironment(env, log)
 
     cmdenv.rebuild()
 
-def watch(location, debug=False, cache=False):
-    env = _setup_env(location, debug, cache)
+def watch(app='', debug=False, cache=False):
+    env = _setup_env(app, debug, cache)
     log = _load_logger()
     cmdenv = CommandLineEnvironment(env, log)
 

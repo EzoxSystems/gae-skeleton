@@ -18,7 +18,6 @@ window.App.Skel = App.module('Skel')
 
 
 class App.Skel.Views.App extends Backbone.View
-    el: $("#skelapp")
 
     onClose: =>
         @$el.html('')
@@ -31,6 +30,7 @@ class App.Skel.Views.ModelApp extends App.Skel.Views.App
     addView: null
     editView: null
     listView: null
+    module: null
     searchMode: true
 
     events:
@@ -44,7 +44,7 @@ class App.Skel.Views.ModelApp extends App.Skel.Views.App
         @$el.html(@template())
 
         @listView = new App.Skel.Views.ListApp(
-            "#{@modelType.name}List", @$("##{@modelType.name}list"))
+            @module, "#{@modelType.name}List", @$("##{@modelType.name}list"))
 
         $("#add_new").focus()
         return this
@@ -109,9 +109,10 @@ class App.Skel.Views.ModelApp extends App.Skel.Views.App
 
     editSave: (model) =>
         App.Skel.Events.unbind("#{@modelType.name}:save", this.editSave, this)
-        @editView.$el.modal('hide')
-        @editView.close()
-        @editView = null
+        if @editView
+            @editView.$el.modal('hide')
+            @editView.close()
+            @editView = null
 
     onClose: =>
         App.Skel.Events.unbind(null, null, this)
@@ -190,7 +191,7 @@ class App.Skel.Views.ListView extends Backbone.View
 
 class App.Skel.Views.ListApp extends App.Skel.Views.App
 
-    initialize: (view, el, collection) ->
+    initialize: (module, view, el, collection) ->
         if el
             @el = el
         else
@@ -199,8 +200,8 @@ class App.Skel.Views.ListApp extends App.Skel.Views.App
         if not collection
             collection = view
 
-        @modalView = App.Skel.Views[view]
-        @collection = new App.Skel.Collections[collection]
+        @modalView = App[module].Views[view]
+        @collection = new App[module].Collections[collection]
         @collection.bind('add', @addOne, this)
         @collection.bind('reset', @addAll, this)
         @collection.bind('all', @show, this)

@@ -17,7 +17,7 @@ limitations under the License.
 Backbone.View.prototype.close = (() ->
     @remove()
     @unbind()
-    App.Appname.Events.trigger('closing', this)
+    App.Skel.Events.trigger('closing', this)
     @off()
     if @onClose
         @onClose()

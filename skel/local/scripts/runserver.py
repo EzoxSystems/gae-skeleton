@@ -62,7 +62,7 @@ def start(port, address):
         '--skip_sdk_update_check',
         '--high_replication',
         '--default_partition=',
-        '--datastore_path=.appname.ds',
+        '--datastore_path=.demo.ds',
         '--allow_skipped_files',
         '--debug',
         #'--backends',

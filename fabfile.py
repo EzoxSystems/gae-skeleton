@@ -29,7 +29,7 @@ sys.path.append(os.path.join('lib', 'local', 'scripts'))
 #install
 #dev
 
-def dev(appname):
+def dev(demo):
     import assets
     assets.build(debug=True, cache=False)
     assets.watch(debug=True, cache=False)
