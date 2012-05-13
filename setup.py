@@ -20,7 +20,7 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 packages = [
-    'gae_skeleton',
+    'skel',
 ]
 
 requires = [
