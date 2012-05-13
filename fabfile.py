@@ -21,10 +21,24 @@ import sys
 
 from fabric.api import local
 
-sys.path.append(os.path.join('lib', 'local', 'scripts'))
+BASE_PATH = os.getcwdu()
+sys.path.append(os.path.join(BASE_PATH, 'skel', 'local', 'scripts'))
 
 
 #make_app
+def make_app(app_name, path=''):
+    from setup import apps
+
+    print 'creating %s' % (app_name,)
+    apps.create_app(app_name.lower(), path)
+
+    print 'renaming in template'
+    local("cd %s; sh %s %s" % (
+        app_name.lower(),
+        os.path.join(
+            BASE_PATH, 'skel', 'local', 'scripts', 'setup', 'changename.sh'),
+        app_name))
+
 #update
 #install
 #dev
