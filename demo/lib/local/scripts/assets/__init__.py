@@ -12,7 +12,8 @@ def _bundle_images(app, env, is_skel=False):
     import shutil
 
     if is_skel:
-        root_src_dir = os.path.join(BASE_LOCATION, '..', 'skel_assets', 'img')
+        root_src_dir = os.path.join(
+            BASE_LOCATION, '..', 'skel', 'assets', 'img')
         root_dst_dir = os.path.join(BASE_LOCATION, 'static', 'img')
     else:
         root_src_dir = os.path.join(BASE_LOCATION, 'assests', 'img')

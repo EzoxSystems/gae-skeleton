@@ -116,12 +116,12 @@ def _setup_env(app='', debug=True, cache=True):
     if app:
         app_path = path.join('..', app, 'static')
         env = Environment(
-            path.join(INPUT_FILES, '..', '..', 'skel_assets'),
+            path.join(INPUT_FILES, '..', '..', 'skel', 'assets'),
             path.join(BASE_LOCATION, '..'))
     else:
         app_path = path.join('..', 'static')
         env = Environment(
-            path.join(INPUT_FILES, '..', '..', 'skel_assets'),
+            path.join(INPUT_FILES, '..', '..', 'skel', 'assets'),
             path.join(BASE_LOCATION))
 
     # We use underscore's templates by default.

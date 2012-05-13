@@ -49,8 +49,8 @@ def _bundle_app_coffee(app, env, debug=False):
         path.join(COFFEE_PATH, 'app.coffee'),
         path.join(COFFEE_PATH, 'menu.coffee'),
         path.join(COFFEE_PATH, 'router.coffee'),
-        path.join(COFFEE_PATH, 'contact.coffee'),
         path.join(COFFEE_PATH, 'person.coffee'),
+        path.join(COFFEE_PATH, 'contact.coffee'),
     )
 
     if not scripts:
