@@ -1,6 +1,6 @@
 
 
-class App.Appname.Views.ChannelApp extends Backbone.View
+class App.Skel.Views.ChannelApp extends Backbone.View
     channelId: null
     socket: null
     timeoutAction: null
@@ -23,7 +23,7 @@ class App.Appname.Views.ChannelApp extends Backbone.View
         )
 
 
-class App.Appname.Views.ChannelHandlers
+class App.Skel.Views.ChannelHandlers
 
     onopen: =>
         console.log('open')

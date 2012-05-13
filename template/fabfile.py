@@ -23,15 +23,16 @@ from fabric.api import local
 
 sys.path.append(os.path.join('lib', 'local', 'scripts'))
 
+app = 'appname'
 
 def dev():
     import assets
-    assets.build(debug=True, cache=False)
-    assets.watch(debug=True, cache=False)
+    assets.build(app, debug=True, cache=False)
+    assets.watch(app, debug=True, cache=False)
 
 def build():
     import assets
-    assets.build(debug=False, cache=True)
+    assets.build(app, debug=False, cache=True)
 
 def cleanpy():
     local('find . -name "*.pyc" -delete')

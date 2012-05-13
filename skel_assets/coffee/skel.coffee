@@ -14,17 +14,17 @@
 # limitations under the License.
 #
 
-window.App.Appname = App.module('Appname')
+window.App.Skel = App.module('Skel')
 
 
-class App.Appname.Views.App extends Backbone.View
-    el: $("#appnameapp")
+class App.Skel.Views.App extends Backbone.View
+    el: $("#skelapp")
 
     onClose: =>
         @$el.html('')
 
 
-class App.Appname.Views.ModelApp extends App.Appname.Views.App
+class App.Skel.Views.ModelApp extends App.Skel.Views.App
     template: null
     modelType: null
     form: null
@@ -38,19 +38,19 @@ class App.Appname.Views.ModelApp extends App.Appname.Views.App
 
     render: =>
         @searchMode = true
-        App.Appname.Events.bind("#{@modelType.name}:add", @addItem, this)
-        App.Appname.Events.bind("#{@modelType.name}:edit", @editItem, this)
+        App.Skel.Events.bind("#{@modelType.name}:add", @addItem, this)
+        App.Skel.Events.bind("#{@modelType.name}:edit", @editItem, this)
 
         @$el.html(@template())
 
-        @listView = new App.Appname.Views.ListApp(
+        @listView = new App.Skel.Views.ListApp(
             "#{@modelType.name}List", @$("##{@modelType.name}list"))
 
         $("#add_new").focus()
         return this
 
     editItem: (model) =>
-        App.Appname.Events.bind("#{@modelType.name}:save", this.editSave, this)
+        App.Skel.Events.bind("#{@modelType.name}:save", this.editSave, this)
 
         @addClose()
         @editView = new @form({model: model})
@@ -70,8 +70,8 @@ class App.Appname.Views.ModelApp extends App.Appname.Views.App
             @addClose()
 
     addOpen: =>
-        App.Appname.Events.bind("#{@modelType.name}:save", this.addSave, this)
-        App.Appname.Events.unbind(
+        App.Skel.Events.bind("#{@modelType.name}:save", this.addSave, this)
+        App.Skel.Events.unbind(
             "#{@modelType.name}:save", this.editSave, this)
 
         @searchMode = false
@@ -88,7 +88,7 @@ class App.Appname.Views.ModelApp extends App.Appname.Views.App
         $("#add_new").text('Search Mode')
 
     addClose: =>
-        App.Appname.Events.unbind("#{@modelType.name}:save", this.addSave, this)
+        App.Skel.Events.unbind("#{@modelType.name}:save", this.addSave, this)
 
         @searchMode = true
 
@@ -104,17 +104,17 @@ class App.Appname.Views.ModelApp extends App.Appname.Views.App
         valid = @addView.model.isValid()
 
         if valid
-            App.Appname.Events.trigger("#{@modelType.name}:add", model)
+            App.Skel.Events.trigger("#{@modelType.name}:add", model)
             @addOpen()
 
     editSave: (model) =>
-        App.Appname.Events.unbind("#{@modelType.name}:save", this.editSave, this)
+        App.Skel.Events.unbind("#{@modelType.name}:save", this.editSave, this)
         @editView.$el.modal('hide')
         @editView.close()
         @editView = null
 
     onClose: =>
-        App.Appname.Events.unbind(null, null, this)
+        App.Skel.Events.unbind(null, null, this)
 
         if @addView
             @addView.close()
@@ -124,7 +124,7 @@ class App.Appname.Views.ModelApp extends App.Appname.Views.App
         @listView.close()
 
 
-class App.Appname.Views.EditView extends Backbone.View
+class App.Skel.Views.EditView extends Backbone.View
     tagName: "div"
     modelType: null
     isModal: false
@@ -153,7 +153,7 @@ class App.Appname.Views.EditView extends Backbone.View
         return this
 
     save: =>
-        App.Appname.Events.trigger("#{@modelType.name}:save", @model, this)
+        App.Skel.Events.trigger("#{@modelType.name}:save", @model, this)
         return false
 
     updateOnEnter: (e) =>
@@ -165,7 +165,7 @@ class App.Appname.Views.EditView extends Backbone.View
             return false
 
 
-class App.Appname.Views.ListView extends Backbone.View
+class App.Skel.Views.ListView extends Backbone.View
     tagName: "tr"
     modelType: null
 
@@ -182,13 +182,13 @@ class App.Appname.Views.ListView extends Backbone.View
         return this
 
     edit: =>
-        App.Appname.Events.trigger("#{@modelType.name}:edit", @model, this)
+        App.Skel.Events.trigger("#{@modelType.name}:edit", @model, this)
 
     delete: =>
         @model.destroy()
 
 
-class App.Appname.Views.ListApp extends App.Appname.Views.App
+class App.Skel.Views.ListApp extends App.Skel.Views.App
 
     initialize: (view, el, collection) ->
         if el
@@ -199,8 +199,8 @@ class App.Appname.Views.ListApp extends App.Appname.Views.App
         if not collection
             collection = view
 
-        @modalView = App.Appname.Views[view]
-        @collection = new App.Appname.Collections[collection]
+        @modalView = App.Skel.Views[view]
+        @collection = new App.Skel.Collections[collection]
         @collection.bind('add', @addOne, this)
         @collection.bind('reset', @addAll, this)
         @collection.bind('all', @show, this)

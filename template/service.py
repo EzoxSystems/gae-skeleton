@@ -30,7 +30,7 @@ if libs_dir not in sys.path:
 import webapp2
 
 url_map = [
-    ('.*/person.*', 'appname.service.PersonHandler'),
+    #TODO: add service endpoints
 ]
 
 app = webapp2.WSGIApplication(url_map)

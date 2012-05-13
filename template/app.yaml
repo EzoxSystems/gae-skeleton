@@ -4,11 +4,41 @@ runtime: python27
 api_version: 1
 threadsafe: true
 
+skip_files: |
+ ^(.*/)?(
+ (app\.yaml)|
+ (app\.yml)|
+ (index\.yaml)|
+ (index\.yml)|
+ (#.*#)|
+ (.*~)|
+ (.*\.py[co])|
+ (.*/RCS/.*)|
+ (\..*)|
+ (lib/local/.*)|
+ (settingslocal\.py)|
+ (.idea)|
+ (.ropeproject)|
+ (.git)|
+ (.gitignore)|
+ (assets)|
+ )$
+
+
 libraries:
 - name: webob
   version: latest
 - name: markupsafe
   version: latest
+
+builtins:
+- appstats: on
+- remote_api: on
+
+admin_console:
+  pages:
+  - name: Appstats
+    url: /_ah/stats/
 
 handlers:
 - url: /static

@@ -27,6 +27,7 @@
         </div>
         <script type="application/javascript" src="/static/script/libs.js"></script>
         <script type="application/javascript" src="/static/script/template.js"></script>
+        <script type="application/javascript" src="/static/script/skel.js"></script>
         <script type="application/javascript" src="/static/script/appname.js"></script>
         <script type="text/javascript">
         $(function(){
