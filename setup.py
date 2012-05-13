@@ -7,7 +7,7 @@ distutils/setuptools install script. See inline comments for packaging documenta
 import os
 import sys
 
-import gae_skeleton
+import skel
 
 try:
     from setuptools import setup
@@ -36,7 +36,7 @@ extras_require = {
 
 setup(
     name='gae-skeleton',
-    version=gae_skeleton.__version__,
+    version=skel.__version__,
     description='A simple skeleton for App Engine apps',
     long_description=open('README.rst').read() + '\n\n' +
                      open('HISTORY.rst').read(),

@@ -22,19 +22,19 @@ import sys
 from fabric.api import local
 
 BASE_PATH = os.getcwdu()
-sys.path.append(os.path.join(BASE_PATH, 'skel', 'local', 'scripts'))
+sys.path.append(os.path.join(BASE_PATH, 'skel', 'local'))
 
 
 #make_app
 def make_app(app_name, path=''):
-    from setup import apps
+    from scripts.setup import apps
 
     print 'creating %s' % (app_name,)
     apps.create_app(app_name, path)
 
 #update
 def update_app(app_name, path=''):
-    from setup import apps
+    from scripts.setup import apps
 
     print 'updating %s' % (app_name,)
     apps.update_app(app_name, path)
