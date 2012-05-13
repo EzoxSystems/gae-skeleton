@@ -15,8 +15,8 @@
 #
 
 
-class App.Appname.Router extends Backbone.Router
-    el: $("#appnamecontainer")
+class App.Demo.Router extends Backbone.Router
+    el: $("#democontainer")
     menu: null
 
     routes:
@@ -24,7 +24,7 @@ class App.Appname.Router extends Backbone.Router
         "person": "showPerson"
 
     initialize: (data) ->
-        @menu = new App.Appname.Views.Menu()
+        @menu = new App.Demo.Views.Menu()
         @menu.render()
 
     swap: (newView, args) =>
@@ -35,5 +35,5 @@ class App.Appname.Router extends Backbone.Router
         $(@el).append(@currentView.render().el)
 
     showPerson: () =>
-        @swap(App.Appname.Views.PersonApp)
+        @swap(App.Demo.Views.PersonApp)
 

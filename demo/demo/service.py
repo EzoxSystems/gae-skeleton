@@ -29,7 +29,7 @@ import webapp2
 
 class PersonHandler(webapp2.RequestHandler):
     def get(self):
-        from appname.person import Person
+        from demo.person import Person
         user_query = self.request.get('query')
         limit = int(self.request.get('limit', 10))
 
@@ -47,7 +47,7 @@ class PersonHandler(webapp2.RequestHandler):
 
     def delete(self):
         from google.appengine.ext import ndb
-        from appname.person import Person
+        from demo.person import Person
         urlsafe = self.request.path.rsplit('/', 1)[-1]
         if not urlsafe:
             return
@@ -68,8 +68,8 @@ class PersonHandler(webapp2.RequestHandler):
 
     def process(self):
         from voluptuous import Schema
-        from appname.person import Person
-        from appname.person import person_schema
+        from demo.person import Person
+        from demo.person import person_schema
 
         person = json.loads(self.request.body)
         schema = Schema(person_schema, extra=True)

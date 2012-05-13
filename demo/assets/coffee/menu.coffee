@@ -15,7 +15,7 @@
 #
 
 
-class App.Appname.Models.MenuItem extends Backbone.Model
+class App.Demo.Models.MenuItem extends Backbone.Model
     defaults: ->
         return {
             text: "",
@@ -24,11 +24,11 @@ class App.Appname.Models.MenuItem extends Backbone.Model
         }
 
 
-class App.Appname.Collections.MenuItems extends Backbone.Collection
-    model: App.Appname.Models.MenuItem
+class App.Demo.Collections.MenuItems extends Backbone.Collection
+    model: App.Demo.Models.MenuItem
 
 
-class App.Appname.Views.MenuItems extends Backbone.View
+class App.Demo.Views.MenuItems extends Backbone.View
     template: JST.menuitem
     tagName: "li"
     className: "menu"
@@ -39,8 +39,8 @@ class App.Appname.Views.MenuItems extends Backbone.View
         return this
 
 
-class App.Appname.Views.Menu extends Backbone.View
-    el: $("#appnameheader")
+class App.Demo.Views.Menu extends Backbone.View
+    el: $("#demoheader")
 
     initialize: () ->
         items = [
@@ -50,13 +50,13 @@ class App.Appname.Views.Menu extends Backbone.View
                 href: '#\/person'
             },
         ]
-        @collection = new App.Appname.Collections.MenuItems(items)
+        @collection = new App.Demo.Collections.MenuItems(items)
         @collection.bind('change', @render, this)
 
     render: =>
-        menu = @$("#appname-menu")
+        menu = @$("#demo-menu")
         @collection.each((menuItem) =>
-            view = new App.Appname.Views.MenuItems({model: menuItem})
+            view = new App.Demo.Views.MenuItems({model: menuItem})
             menu.append(view.render().el)
         )
         return this

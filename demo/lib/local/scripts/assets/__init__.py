@@ -12,11 +12,12 @@ def _bundle_images(app, env, is_skel=False):
     import shutil
 
     if is_skel:
-        root_src_dir = os.path.join(INPUT_FILES, 'img')
+        root_src_dir = os.path.join(BASE_LOCATION, '..', 'skel_assets', 'img')
+        root_dst_dir = os.path.join(BASE_LOCATION, 'static', 'img')
     else:
-        root_src_dir = os.path.join(BASE_LOCATION, app, 'assests', 'img')
+        root_src_dir = os.path.join(BASE_LOCATION, 'assests', 'img')
+        root_dst_dir = os.path.join(BASE_LOCATION, 'static', 'img')
 
-    root_dst_dir = os.path.join(BASE_LOCATION, app, 'static', 'img')
 
     for src_dir, dirs, files in os.walk(root_src_dir):
         dst_dir = src_dir.replace(root_src_dir, root_dst_dir)
@@ -28,5 +29,4 @@ def _bundle_images(app, env, is_skel=False):
             if os.path.exists(dst_file):
                 os.remove(dst_file)
             shutil.move(src_file, dst_dir)
-
 

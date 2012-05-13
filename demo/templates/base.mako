@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Appname</title>
+        <title>Demo</title>
         <link rel="stylesheet" type="text/css" href="/static/css/lib.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/appname.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/demo.css">
     </head>
     <body>
-        <div id="appname">
+        <div id="demo">
             <div class="navbar navbar-fixed-top">
                 <div class="navbar-inner">
                     <div class="container">
-                        <a class="brand" href="#">Appname</a>
-                        <div id="appnameheader" class="nav-collapse">
-                            <ul id="appname-menu" class="nav">
+                        <a class="brand" href="#">Demo</a>
+                        <div id="demoheader" class="nav-collapse">
+                            <ul id="demo-menu" class="nav">
                             </ul>
                         </div><!--/.nav-collapse -->
                     </div>
                 </div>
             </div>
-            <div id="appnamecontainer" class="container">
-                <div id="appnameapp"></div>
+            <div id="democontainer" class="container">
+                <div id="demoapp"></div>
             </div>
         </div>
         <div class="footer">
@@ -27,12 +27,13 @@
         </div>
         <script type="application/javascript" src="/static/script/libs.js"></script>
         <script type="application/javascript" src="/static/script/template.js"></script>
-        <script type="application/javascript" src="/static/script/appname.js"></script>
+        <script type="application/javascript" src="/static/script/skel.js"></script>
+        <script type="application/javascript" src="/static/script/demo.js"></script>
         <script type="text/javascript">
         $(function(){
-            var appname = new App.Appname.Router
+            var demo = new App.Demo.Router
             Backbone.history.start();
-            App.Appname.router = appname;
+            App.Demo.router = demo;
         });
         </script>
     </body>

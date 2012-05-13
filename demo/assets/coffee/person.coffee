@@ -14,7 +14,7 @@
 #
 
 
-class App.Appname.Models.Person extends Backbone.Model
+class App.Demo.Models.Person extends Backbone.Model
     idAttribute: 'key'
     urlRoot: '/service/person'
     defaults: ->
@@ -28,7 +28,7 @@ class App.Appname.Models.Person extends Backbone.Model
     initialize: () ->
         @contact_info = @nestCollection(
             'contact_info',
-            new App.Appname.Collections.ContactInfo(@get('contact_info')))
+            new App.Demo.Collections.ContactInfo(@get('contact_info')))
 
     validate: (attrs) =>
         hasError = false
@@ -42,14 +42,14 @@ class App.Appname.Models.Person extends Backbone.Model
             return errors
 
 
-class App.Appname.Collections.PersonList extends Backbone.Collection
+class App.Demo.Collections.PersonList extends Backbone.Collection
     url: '/service/person'
-    model: App.Appname.Models.Person
+    model: App.Demo.Models.Person
 
 
-class App.Appname.Views.PersonEdit extends App.Appname.Views.EditView
+class App.Demo.Views.PersonEdit extends App.Skel.Views.EditView
     template: JST['person/edit']
-    modelType: App.Appname.Models.Person
+    modelType: App.Demo.Models.Person
     focusButton: 'input#name'
 
     events:
@@ -76,7 +76,7 @@ class App.Appname.Views.PersonEdit extends App.Appname.Views.EditView
         el.html(@template(@model.toJSON()))
 
         @model.contact_info.each((info, i) ->
-            editView = new App.Appname.Views.ContactInfoEdit({model: info})
+            editView = new App.Demo.Views.ContactInfoEdit({model: info})
             el.find('fieldset.contact_info').append(editView.render().el)
         )
 
@@ -86,7 +86,7 @@ class App.Appname.Views.PersonEdit extends App.Appname.Views.EditView
         newModel = new @model.contact_info.model()
         @model.contact_info.add(newModel)
 
-        editView = new App.Appname.Views.ContactInfoEdit({model: newModel})
+        editView = new App.Demo.Views.ContactInfoEdit({model: newModel})
         rendered = editView.render()
         @$el.find('fieldset.contact_info').append(rendered.el)
 
@@ -105,12 +105,14 @@ class App.Appname.Views.PersonEdit extends App.Appname.Views.EditView
         return super(e)
 
 
-class App.Appname.Views.PersonApp extends App.Appname.Views.ModelApp
+class App.Demo.Views.PersonApp extends App.Skel.Views.ModelApp
+    el: $("#demoapp")
     template: JST['person/view']
-    modelType: App.Appname.Models.Person
-    form: App.Appname.Views.PersonEdit
+    modelType: App.Demo.Models.Person
+    form: App.Demo.Views.PersonEdit
+    module: 'Demo'
 
-class App.Appname.Views.PersonList extends App.Appname.Views.ListView
+class App.Demo.Views.PersonList extends App.Skel.Views.ListView
     template: JST['person/list']
-    modelType: App.Appname.Models.Person
+    modelType: App.Demo.Models.Person
 
