@@ -1,0 +1,32 @@
+<form class="edit containter-fluid well form-horizontal">
+    <div class="row-fluid">
+        <div id="editheadercontainer" class="modal-header">
+            <h3 id="editheader">Person<h3>
+        </div>
+        <div class="modal-body">
+            <fieldset>
+                <div class="control-group">
+                    <div class="control">
+                        <input type="text" value="<%= name %>" id="name" class="name" placeholder="Name..." />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="control">
+                        <fieldset class="contact_info"></fieldset>
+                        <br />
+                        <button class="contact add_contact btn btn-primary">add contact info</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="control">
+                        <textarea class="notes input-xlarge" placeholder="Notes..."><%= notes %></textarea>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="modal-footer">
+            <button class="save btn-large btn-primary">Save</button>
+            <button class="remove-button btn-large btn-danger">Clear</button>
+        </div>
+    </div>
+</form>
