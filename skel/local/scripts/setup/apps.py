@@ -114,10 +114,13 @@ def _rename(app_name, destination_directory):
     def _run(items):
         for item in items:
             if 'appname' in item:
-                __rename(item, app_name.lower())
+                __rename(item, item.replace('appname', app_name.lower()))
             if 'Appname' in item:
-                __rename(item, app_name)
+                __rename(item, item.replace('Appname', app_name))
 
     for _, dirs, files in os.walk(destination_directory):
-        _run(dirs)
+        for directory in dirs:
+            _run((directory,))
+            _rename(app_name, os.path.join(destination_directory, directory))
         _run(files)
+
