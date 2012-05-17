@@ -48,6 +48,7 @@ def _bundle_app_coffee(app_path, env, debug=False):
         path.join(COFFEE_PATH, 'app.coffee'),
         path.join(COFFEE_PATH, 'skel.coffee'),
         path.join(COFFEE_PATH, 'channel.coffee'),
+        path.join(COFFEE_PATH, 'utils.coffee'),
     )
     all_js = Bundle(
         *scripts,

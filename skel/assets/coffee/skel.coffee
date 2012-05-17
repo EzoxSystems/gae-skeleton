@@ -137,6 +137,20 @@ class App.Skel.Views.EditView extends Backbone.View
 
         return false
 
+    change: (event) =>
+        App.Utils.Forms.hideAlert()
+
+        target = event.target
+        change = {}
+        change[target.name] = target.value
+        @model.set(change)
+
+        check = @model.validate(@model.toJSON())
+        if @model.isValid
+            App.Utils.Forms.removeValidationError(target.id)
+        else
+            App.Utils.Forms.addValidationError(target.id, check.message)
+
     render: (asModal) =>
         @isModal = asModal
 
@@ -153,7 +167,14 @@ class App.Skel.Views.EditView extends Backbone.View
 
         return this
 
-    save: =>
+    save: (params) =>
+        errors = @model.validate(params)
+        if errors
+            App.Utils.Forms.displayValidationErrors(errors)
+            return false
+
+        @model.save(params)
+
         App.Skel.Events.trigger("#{@modelType.name}:save", @model, this)
         return false
 
