@@ -114,7 +114,7 @@ def _bundle_3rd_party_css(app_path, env, debug=False):
 def _setup_env(app='', debug=True, cache=True):
     """Setup the webassets environment."""
     if app:
-        app_path = path.join('..', app, 'static')
+        app_path = path.join('..', '..', app, 'static')
         env = Environment(
             path.join(INPUT_FILES, '..', '..', 'skel', 'assets'),
             path.join(BASE_LOCATION, '..'))
