@@ -53,6 +53,7 @@ class App.Demo.Views.PersonEdit extends App.Skel.Views.EditView
     focusButton: 'input#name'
 
     events:
+        "change": "change"
         "click a.destroy": "clear"
         "click button.add_contact": "addContactInfo"
         "click .save": "save"
@@ -64,12 +65,11 @@ class App.Demo.Views.PersonEdit extends App.Skel.Views.EditView
         @model.contact_info.each((info) ->
             info.editView.close()
         )
-        @model.save(
+        return super(
             name: @$('input.name').val()
             notes: $.trim(@$('textarea.notes').val())
         )
 
-        super()
 
     render: (asModal) =>
         el = @$el

@@ -1,3 +1,6 @@
+<div class="row-fluid status-bar" > <div class="alert alert-success"
+    style="display: none"> <b> Success! </b> Person saved successfully
+</div>
 <form class="edit containter-fluid well form-horizontal">
     <div class="row-fluid">
         <div id="editheadercontainer" class="modal-header">
@@ -6,8 +9,10 @@
         <div class="modal-body">
             <fieldset>
                 <div class="control-group">
-                    <div class="control">
-                        <input type="text" value="<%= name %>" id="name" class="name" placeholder="Name..." />
+                    <label for="name" class="control-label">Name:</label>
+                    <div class="controls">
+                        <input id="name" name="name" type="text" value="<%= name %>" 
+                            class="name" placeholder="Name..." />
                     </div>
                 </div>
                 <div class="control-group">
@@ -18,13 +23,15 @@
                     </div>
                 </div>
                 <div class="control-group">
-                    <div class="control">
-                        <textarea class="notes input-xlarge" placeholder="Notes..."><%= notes %></textarea>
+                    <label for="notes" class="control-label">Notes:</label>
+                    <div class="controls">
+                        <textarea id="notes" name="notes" class="notes input-xlarge"
+                            placeholder="Notes..."><%= notes %></textarea>
                     </div>
                 </div>
             </fieldset>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer form-actions">
             <button class="save btn-large btn-primary">Save</button>
             <button class="remove-button btn-large btn-danger">Clear</button>
         </div>
