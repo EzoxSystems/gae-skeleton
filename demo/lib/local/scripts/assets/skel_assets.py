@@ -48,6 +48,7 @@ def _bundle_app_coffee(app_path, env, debug=False):
         path.join(COFFEE_PATH, 'app.coffee'),
         path.join(COFFEE_PATH, 'skel.coffee'),
         path.join(COFFEE_PATH, 'channel.coffee'),
+        path.join(COFFEE_PATH, 'utils.coffee'),
     )
     all_js = Bundle(
         *scripts,
@@ -114,7 +115,7 @@ def _bundle_3rd_party_css(app_path, env, debug=False):
 def _setup_env(app='', debug=True, cache=True):
     """Setup the webassets environment."""
     if app:
-        app_path = path.join('..', app, 'static')
+        app_path = path.join('..', '..', app, 'static')
         env = Environment(
             path.join(INPUT_FILES, '..', '..', 'skel', 'assets'),
             path.join(BASE_LOCATION, '..'))

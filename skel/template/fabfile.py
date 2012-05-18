@@ -23,7 +23,7 @@ from fabric.api import local
 
 sys.path.append(os.path.join('lib', 'local', 'scripts'))
 
-APP = 'appname'
+APP = 'Appname'
 
 def dev():
     from assets import app_assets
