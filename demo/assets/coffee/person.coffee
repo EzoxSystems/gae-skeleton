@@ -37,6 +37,7 @@ class App.Demo.Models.Person extends Backbone.Model
         if _.isEmpty(attrs.name)
             hasError = true
             errors.name = "Missing name."
+            errors.property = 'name'
 
         if hasError
             return errors
@@ -65,11 +66,13 @@ class App.Demo.Views.PersonEdit extends App.Skel.Views.EditView
         @model.contact_info.each((info) ->
             info.editView.close()
         )
-        return super(
+
+        @model.save(
             name: @$('input.name').val()
             notes: $.trim(@$('textarea.notes').val())
         )
 
+        return super()
 
     render: (asModal) =>
         el = @$el

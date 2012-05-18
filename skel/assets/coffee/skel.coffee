@@ -131,6 +131,10 @@ class App.Skel.Views.EditView extends Backbone.View
     isModal: false
     focusButton: null
 
+    initialize: =>
+        @model.bind('error', App.Utils.Forms.addModelError)
+        @model.bind('update', @change)
+
     clear: =>
         @model.clear()
         @render(@isModal)
@@ -168,13 +172,6 @@ class App.Skel.Views.EditView extends Backbone.View
         return this
 
     save: (params) =>
-        errors = @model.validate(params)
-        if errors
-            App.Utils.Forms.displayValidationErrors(errors)
-            return false
-
-        @model.save(params)
-
         App.Skel.Events.trigger("#{@modelType.name}:save", @model, this)
         return false
 
