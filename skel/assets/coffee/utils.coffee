@@ -2,7 +2,7 @@ window.App.Utils = App.module('Utils')
 
 
 class App.Utils.Forms
-    @displayValidationErrors: (messages) =>
+    @displayValidationErrors: (model, messages) =>
         for field, message of messages
             @addValidationError(field, message)
 
@@ -13,17 +13,14 @@ class App.Utils.Forms
     @addValidationError: (field, message) =>
         parentField = $("##{field}").parent()
         controlGroup = parentField.parent()
-        controlGroup.addClass('error')
-        parentField.append(
-            $("<span><span>")
-                .addClass("help-inline")
-                .html(message))
+        if not controlGroup.hasClass('error')
+            controlGroup.addClass('error')
 
-    @addModelError: (model, error) =>
-        @addValidationError(error.property, error.name)
-
-        @showAlert(
-            "Warning!", "Fix validation errors and try again", "alert-warning")
+        if parentField.children().length < 2>
+            parentField.append(
+                $("<span><span>")
+                    .addClass("help-inline")
+                    .html(message))
 
 
     @removeValidationError: (field) =>

@@ -132,8 +132,7 @@ class App.Skel.Views.EditView extends Backbone.View
     focusButton: null
 
     initialize: =>
-        @model.bind('error', App.Utils.Forms.addModelError)
-        @model.bind('update', @change)
+        @model.bind('error', App.Utils.Forms.displayValidationErrors)
 
     clear: =>
         @model.clear()
