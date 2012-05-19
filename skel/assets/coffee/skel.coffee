@@ -50,13 +50,15 @@ class App.Skel.Views.ModelApp extends App.Skel.Views.App
         return this
 
     editItem: (model) =>
+        console.log('edit form')
         App.Skel.Events.bind("#{@modelType.name}:save", this.editSave, this)
 
-        @addClose()
         @editView = new @form({model: model})
+
         el = @editView.render(true).$el
         el.modal('show')
         el.find('input.code').focus()
+
         if @editView.focusButton
             el.find(@editView.focusButton).focus()
 
