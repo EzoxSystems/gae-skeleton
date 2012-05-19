@@ -16,7 +16,7 @@ class App.Utils.Forms
         if not controlGroup.hasClass('error')
             controlGroup.addClass('error')
 
-        if parentField.children().length < 2>
+        if parentField.children().length < 2
             parentField.append(
                 $("<span><span>")
                     .addClass("help-inline")

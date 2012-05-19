@@ -57,12 +57,15 @@ class App.Demo.Views.PersonEdit extends App.Skel.Views.EditView
         "change": "change"
         "click a.destroy": "clear"
         "click button.add_contact": "addContactInfo"
-        "click .save": "save"
+        "submit form" : "save"
         "keypress .edit": "updateOnEnter"
         "click .remove-button": "clear"
         "hidden": "close"
 
-    save: =>
+    save: (e) =>
+        if e
+            e.preventDefault()
+
         @model.contact_info.each((info) ->
             info.editView.close()
         )
