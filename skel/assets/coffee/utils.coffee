@@ -9,7 +9,6 @@ class App.Utils.Forms
         @showAlert(
             "Warning!", "Fix validation errors and try again", "alert-warning")
 
-
     @addValidationError: (field, message) =>
         parentField = $("##{field}").parent()
         controlGroup = parentField.parent()
@@ -21,7 +20,6 @@ class App.Utils.Forms
                 $("<span><span>")
                     .addClass("help-inline")
                     .html(message))
-
 
     @removeValidationError: (field) =>
         controlGroup = $("##{field}").parent().parent()

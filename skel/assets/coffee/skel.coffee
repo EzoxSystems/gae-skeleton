@@ -50,7 +50,6 @@ class App.Skel.Views.ModelApp extends App.Skel.Views.App
         return this
 
     editItem: (model) =>
-        console.log('edit form')
         App.Skel.Events.bind("#{@modelType.name}:save", this.editSave, this)
 
         @editView = new @form({model: model})
@@ -174,6 +173,8 @@ class App.Skel.Views.EditView extends Backbone.View
 
     save: (params) =>
         App.Skel.Events.trigger("#{@modelType.name}:save", @model, this)
+
+        $('.alert-success').css('display', 'block')
         return false
 
     updateOnEnter: (e) =>
