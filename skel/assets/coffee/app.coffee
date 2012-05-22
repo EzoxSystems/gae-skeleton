@@ -17,7 +17,7 @@ limitations under the License.
 Backbone.View.prototype.close = (() ->
     @remove()
     @unbind()
-    App.Skel.Events.trigger('closing', this)
+    App.Skel.Event.trigger('closing', this)
     @off()
     if @onClose
         @onClose()
@@ -37,10 +37,10 @@ window.App = (() ->
 
             # Create a module and save it under this name
             return modules[name] = {
-                Models: {}
-                Collections: {}
-                Views: {}
-                Events: _.extend({}, Backbone.Events)
+                Model: {}
+                Collection: {}
+                View: {}
+                Event: _.extend({}, Backbone.Events)
             }
     )()
 )()
