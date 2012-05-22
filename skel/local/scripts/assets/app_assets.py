@@ -57,7 +57,7 @@ def _bundle_app_coffee(app, env, debug=False):
     all_js = Bundle(
         *scripts,
         filters='coffeescript',
-        output=path.join('..', '..', app, 'static', 'script', '%s.js' % (app,))
+        output=path.join('..', '..', app, 'static', 'script', '%s.js' % (app.lower(),))
     )
     env.add(all_js)
 
@@ -141,8 +141,8 @@ def _bundle_3rd_party_css(app, env, debug=False):
 def _bundle_app_less(app, env, debug):
     """Compile and minify demo's less files into demo.css."""
     bundle = Bundle(
-        Bundle(path.join('less', '%s.less' % (app,)), filters='less'),
-        output=path.join('..', '..', app, 'static', 'css', '%s.css' % (app,))
+        Bundle(path.join('less', '%s.less' % (app.lower(),)), filters='less'),
+        output=path.join('..', '..', app, 'static', 'css', '%s.css' % (app.lower(),))
     )
 
     if not debug:

@@ -37,6 +37,7 @@ class App.Demo.Model.Person extends Backbone.Model
         if _.isEmpty(attrs.name)
             hasError = true
             errors.name = "Missing name."
+            errors.property = 'name'
 
         if hasError
             return errors
@@ -53,23 +54,28 @@ class App.Demo.View.PersonEdit extends App.Skel.View.EditView
     focusButton: 'input#name'
 
     events:
+        "change": "change"
         "click a.destroy": "clear"
         "click button.add_contact": "addContactInfo"
-        "click .save": "save"
+        "submit form" : "save"
         "keypress .edit": "updateOnEnter"
         "click .remove-button": "clear"
         "hidden": "close"
 
-    save: =>
+    save: (e) =>
+        if e
+            e.preventDefault()
+
         @model.contact_info.each((info) ->
             info.editView.close()
         )
+
         @model.save(
             name: @$('input.name').val()
             notes: $.trim(@$('textarea.notes').val())
         )
 
-        super()
+        return super()
 
     render: (asModal) =>
         el = @$el

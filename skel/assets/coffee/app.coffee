@@ -40,6 +40,7 @@ window.App = (() ->
                 Model: {}
                 Collection: {}
                 View: {}
+                Util: {}
                 Event: _.extend({}, Backbone.Events)
             }
     )()
