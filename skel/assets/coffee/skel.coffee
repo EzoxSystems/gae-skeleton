@@ -174,7 +174,10 @@ class App.Skel.Views.EditView extends Backbone.View
     save: (params) =>
         App.Skel.Events.trigger("#{@modelType.name}:save", @model, this)
 
-        $('.alert-success').css('display', 'block')
+        if @model.isValid()
+            App.Utils.Formsorms.hideAlert()
+            App.Utils.Forms.showAlert(
+                "Successs!", "Save successful", "alert-success")
         return false
 
     updateOnEnter: (e) =>
