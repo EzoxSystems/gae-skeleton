@@ -144,16 +144,16 @@ class App.Skel.View.EditView extends Backbone.View
     change: (event) =>
         App.Util.Form.hideAlert()
 
-        target = event.target
-        change = {}
-        change[target.name] = target.value
-        @model.set(change)
+        #target = event.target
+        #change = {}
+        #change[target.name] = target.value
+        #@model.set(change)
 
-        check = @model.validate(@model.toJSON())
-        if @model.isValid
-            App.Util.Form.removeValidationError(target.id)
-        else
-            App.Util.Form.addValidationError(target.id, check.message)
+        #check = @model.validate(@model.toJSON())
+        #if @model.isValid
+            #App.Util.Form.removeValidationError(target.id)
+        #else
+            #App.Util.Form.addValidationError(target.id, check.message)
 
     render: (asModal) =>
         @isModal = asModal
@@ -175,8 +175,8 @@ class App.Skel.View.EditView extends Backbone.View
         App.Skel.Event.trigger("#{@modelType.name}:save", @model, this)
 
         if @model.isValid()
-            App.Utils.Forms.hideAlert()
-            App.Utils.Forms.showAlert(
+            App.Util.Form.hideAlert()
+            App.Util.Form.showAlert(
                 "Successs!", "Save successful", "alert-success")
 
         return false
