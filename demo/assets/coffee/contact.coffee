@@ -15,7 +15,7 @@
 #
 
 
-class App.Demo.Models.ContactInfo extends Backbone.Model
+class App.Demo.Model.ContactInfo extends Backbone.Model
     defaults: ->
         return {
             type: "",
@@ -27,11 +27,11 @@ class App.Demo.Models.ContactInfo extends Backbone.Model
         this.destroy()
 
 
-class App.Demo.Collections.ContactInfo extends Backbone.Collection
-    model: App.Demo.Models.ContactInfo
+class App.Demo.Collection.ContactInfo extends Backbone.Collection
+    model: App.Demo.Model.ContactInfo
 
 
-class App.Demo.Views.ContactInfo extends Backbone.View
+class App.Demo.View.ContactInfo extends Backbone.View
     tagName: "div"
     className: "contact-info-view"
     template: JST['contact/view']
@@ -49,7 +49,7 @@ class App.Demo.Views.ContactInfo extends Backbone.View
         @model.clear()
 
 
-class App.Demo.Views.ContactInfoEdit extends Backbone.View
+class App.Demo.View.ContactInfoEdit extends Backbone.View
     tagName: "fieldset"
     className: "contact-info-edit"
     template: JST['contact/edit']

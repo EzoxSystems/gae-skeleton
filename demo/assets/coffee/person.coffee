@@ -14,7 +14,7 @@
 #
 
 
-class App.Demo.Models.Person extends Backbone.Model
+class App.Demo.Model.Person extends Backbone.Model
     idAttribute: 'key'
     urlRoot: '/service/person'
     defaults: ->
@@ -28,7 +28,7 @@ class App.Demo.Models.Person extends Backbone.Model
     initialize: () ->
         @contact_info = @nestCollection(
             'contact_info',
-            new App.Demo.Collections.ContactInfo(@get('contact_info')))
+            new App.Demo.Collection.ContactInfo(@get('contact_info')))
 
     validate: (attrs) =>
         hasError = false
@@ -43,14 +43,14 @@ class App.Demo.Models.Person extends Backbone.Model
             return errors
 
 
-class App.Demo.Collections.PersonList extends Backbone.Collection
+class App.Demo.Collection.PersonList extends Backbone.Collection
     url: '/service/person'
-    model: App.Demo.Models.Person
+    model: App.Demo.Model.Person
 
 
-class App.Demo.Views.PersonEdit extends App.Skel.Views.EditView
+class App.Demo.View.PersonEdit extends App.Skel.View.EditView
     template: JST['person/edit']
-    modelType: App.Demo.Models.Person
+    modelType: App.Demo.Model.Person
     focusButton: 'input#name'
 
     events:
@@ -82,7 +82,7 @@ class App.Demo.Views.PersonEdit extends App.Skel.Views.EditView
         el.html(@template(@model.toJSON()))
 
         @model.contact_info.each((info, i) ->
-            editView = new App.Demo.Views.ContactInfoEdit({model: info})
+            editView = new App.Demo.View.ContactInfoEdit({model: info})
             el.find('fieldset.contact_info').append(editView.render().el)
         )
 
@@ -92,7 +92,7 @@ class App.Demo.Views.PersonEdit extends App.Skel.Views.EditView
         newModel = new @model.contact_info.model()
         @model.contact_info.add(newModel)
 
-        editView = new App.Demo.Views.ContactInfoEdit({model: newModel})
+        editView = new App.Demo.View.ContactInfoEdit({model: newModel})
         rendered = editView.render()
         @$el.find('fieldset.contact_info').append(rendered.el)
 
@@ -111,14 +111,14 @@ class App.Demo.Views.PersonEdit extends App.Skel.Views.EditView
         return super(e)
 
 
-class App.Demo.Views.PersonApp extends App.Skel.Views.ModelApp
+class App.Demo.View.PersonApp extends App.Skel.View.ModelApp
     el: $("#demoapp")
     template: JST['person/view']
-    modelType: App.Demo.Models.Person
-    form: App.Demo.Views.PersonEdit
+    modelType: App.Demo.Model.Person
+    form: App.Demo.View.PersonEdit
     module: 'Demo'
 
-class App.Demo.Views.PersonList extends App.Skel.Views.ListView
+class App.Demo.View.PersonList extends App.Skel.View.ListView
     template: JST['person/list']
-    modelType: App.Demo.Models.Person
+    modelType: App.Demo.Model.Person
 

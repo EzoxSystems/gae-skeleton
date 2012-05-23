@@ -1,7 +1,7 @@
-window.App.Utils = App.module('Utils')
+window.App.Util = App.module('Util')
 
 
-class App.Utils.Forms
+class App.Util.Form
     @displayValidationErrors: (model, messages) =>
         for field, message of messages
             @addValidationError(field, message)

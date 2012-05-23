@@ -24,7 +24,7 @@ class App.Demo.Router extends Backbone.Router
         "person": "showPerson"
 
     initialize: (data) ->
-        @menu = new App.Demo.Views.Menu()
+        @menu = new App.Demo.View.Menu()
         @menu.render()
 
     swap: (newView, args) =>
@@ -35,5 +35,5 @@ class App.Demo.Router extends Backbone.Router
         $(@el).append(@currentView.render().el)
 
     showPerson: () =>
-        @swap(App.Demo.Views.PersonApp)
+        @swap(App.Demo.View.PersonApp)
 
