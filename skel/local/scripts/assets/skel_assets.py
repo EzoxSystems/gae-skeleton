@@ -40,60 +40,50 @@ from . import INPUT_FILES
 from . import _bundle_images
 
 
-def _bundle_app_coffee(app_path, env, debug=False):
-    """Compile the apps coffeescript and bundle it into demo.js"""
-    COFFEE_PATH = 'coffee'
-    scripts = (
-        path.join(COFFEE_PATH, 'nested.coffee'),
-        path.join(COFFEE_PATH, 'app.coffee'),
-        path.join(COFFEE_PATH, 'skel.coffee'),
-        path.join(COFFEE_PATH, 'channel.coffee'),
-        path.join(COFFEE_PATH, 'utils.coffee'),
-    )
-    all_js = Bundle(
-        *scripts,
-        filters='coffeescript',
-        output=path.join(app_path, 'script', 'skel.js')
-    )
-    env.add(all_js)
-
-    if not debug:
-        all_js.filters = 'closure_js'
-
-
-def _bundle_3rd_party_js(app_path, env, debug=False):
+def _bundle_skel(app_path, env, debug=False):
     """Combine thrid party js libs into libs.js.
 
     For debug, they are left uncompressed.  For production the minified
     versions are used.  We suggest using hte vendor supplied minified version
     of each library.
     """
-    JSPATH = path.join('js', 'lib')
-    if debug:
-        all_js = Bundle(
-            path.join(JSPATH, 'json2.js'),
-            path.join(JSPATH, 'jquery.js'),
-            path.join(JSPATH, 'underscore.js'),
-            path.join(JSPATH, 'backbone.js'),
-            path.join(JSPATH, 'bootstrap.js'),
-            path.join(JSPATH, 'bootstrap-typeahead-improved.js'),
-            output=path.join(app_path, 'script', 'libs.js')
-        )
-    else:
-        JSPATH = path.join(JSPATH, 'min')
-        all_js = Bundle(
-            path.join(JSPATH, 'json2.min.js'),
-            path.join(JSPATH, 'jquery-min.js'),
-            path.join(JSPATH, 'underscore-min.js'),
-            path.join(JSPATH, 'backbone-min.js'),
-            path.join(JSPATH, 'bootstrap-min.js'),
-            path.join(JSPATH, 'bootstrap-typeahead-improved-min.js'),
-            output=path.join(app_path, 'script', 'libs.js')
-        )
+
+    jst = (
+        path.join('jst', '*.jst'),
+        path.join('jst', '*', '*.jst'),
+        path.join('jst', '*', '*', '*.jst'),
+    )
+
+    JSPATH = path.join('js', 'lib', 'min')
+    third_js = (
+        path.join(JSPATH, 'json2.min.js'),
+        path.join(JSPATH, 'jquery-min.js'),
+        path.join(JSPATH, 'underscore-min.js'),
+        path.join(JSPATH, 'backbone-min.js'),
+        path.join(JSPATH, 'bootstrap.min.js'),
+        path.join('js', 'lib', 'bootstrap-typeahead-improved.js'),
+    )
+
+    COFFEE_PATH = 'coffee'
+    coffee = (
+        path.join(COFFEE_PATH, 'nested.coffee'),
+        path.join(COFFEE_PATH, 'app.coffee'),
+        path.join(COFFEE_PATH, 'skel.coffee'),
+        path.join(COFFEE_PATH, 'channel.coffee'),
+        path.join(COFFEE_PATH, 'utils.coffee'),
+        path.join(COFFEE_PATH, 'smartbox.coffee')
+    )
+
+    all_js = Bundle(
+        Bundle(*jst, filters='jst'),
+        Bundle(*third_js),
+        Bundle(*coffee, filters='coffeescript'),
+        output=path.join(app_path, 'script', 'skel.js'))
 
     env.add(all_js)
-    if debug:
-        all_js.build()
+
+    if not debug:
+        all_js.filters = 'closure_js'
 
 
 def _bundle_3rd_party_css(app_path, env, debug=False):
@@ -137,8 +127,7 @@ def _setup_env(app='', debug=True, cache=True):
     env.cache = cache
 
     #javascript
-    _bundle_app_coffee(app_path, env, debug)
-    _bundle_3rd_party_js(app_path, env, debug)
+    _bundle_skel(app_path, env, debug)
 
     #css
     _bundle_3rd_party_css(app_path, env, debug)

@@ -118,6 +118,17 @@ class App.Demo.View.PersonApp extends App.Skel.View.ModelApp
     form: App.Demo.View.PersonEdit
     module: 'Demo'
 
+    render: =>
+        super()
+
+        console.log(App.Ui.Smartbox.View.Box)
+        smartbox = new App.Ui.Smartbox.View.Box({})
+        console.log(smartbox.render().el)
+        @$el.append(smartbox.render().el)
+
+        return this
+
+
 class App.Demo.View.PersonList extends App.Skel.View.ListView
     template: JST['person/list']
     modelType: App.Demo.Model.Person
