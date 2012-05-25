@@ -6,6 +6,7 @@ class App.Util.Form
         for field, message of messages
             @addValidationError(field, message)
 
+        @hideAlert()
         @showAlert(
             "Warning!", "Fix validation errors and try again", "alert-warning")
 
@@ -27,10 +28,24 @@ class App.Util.Form
         $('.help-inline', controlGroup).remove()
 
     @showAlert: (title, text, klass) =>
-        $('.alert').removeClass(
+        el = null
+        top_el = $('.top-alert')
+        if top_el
+            el = $("<div></div>")
+            .addClass("alert")
+            .css('display', 'none')
+            top_el.append(el)
+
+        if not el
+            el = $('.alert')
+        if not el
+            return
+
+        el.removeClass(
             "alert-error alert-warning alert-success alert-info")
             .addClass(klass)
-            .html("<strong>#{title}</strong><br />#{text}")
+            .html("<button class='close' data-dismiss='alert'>&times;</button>
+                <strong>#{title}</strong> #{text}")
             .show()
 
     @hideAlert: =>
