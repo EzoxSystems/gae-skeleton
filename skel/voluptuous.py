@@ -775,6 +775,63 @@ def title(v):
     return str(v).title()
 
 
+def ndbkey(msg=None):
+    """Ensure the value is an ndb key string."""
+    from google.appengine.ext import ndb
+    def validator(value):
+        try:
+            return ndb.Key(urlsafe=value)
+        except:
+            raise Invalid(msg or "Invalid key.")
+    return validator
+
+
+def datetime(msg=None, include_hours=False):
+    """Convert a string to a datetime.
+
+    >>> s = Schema(datetime(include_hours=False))
+    >>> s('5/17/12 5:30')
+    datetime.datetime(2012, 5, 17, 5, 30)
+    >>> s('5/17/12')
+    datetime.datetime(2012, 5, 17, 0, 0)
+    """
+    def validator(value):
+        from datetime import datetime
+        from parsedatetime import parsedatetime
+        # TODO: If parsedatetime isn't there, assume date is in some std format.
+
+        if not value:
+            raise Invalid(msg or 'expected a date / time value.')
+
+        c = parsedatetime.Calendar()
+        result, result_type = c.parse(value)
+
+        # return types (see http://code-bear.com/code/parsedatetime/docs/)
+        # 0 = failed to parse
+        # 1 = date (struct_time)
+        # 2 = time (struct_time)
+        # 3 = datetime
+        if result_type == 1:
+            # result is struct_time
+            fields = 5 if include_hours else 3
+            return datetime(*result[:fields])
+
+        if result_type in (2, 3):
+            # result is struct_time
+            return datetime(*result[:6])
+
+        try:
+            date_value = c.parseDate(value)
+            return datetime(*date_value[:6])
+        except ValueError:
+            pass
+
+        raise Invalid(msg or 'expected a date / time value.')
+
+    return validator
+
+
+
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
