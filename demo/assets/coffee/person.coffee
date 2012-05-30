@@ -43,9 +43,25 @@ class App.Demo.Model.Person extends Backbone.Model
             return errors
 
 
-class App.Demo.Collection.PersonList extends Backbone.Collection
-    url: '/service/person'
+class App.Demo.Collection.PersonList extends Backbone.Paginator.requestPager
+    #url: '/service/person'
     model: App.Demo.Model.Person
+
+    paginator_core: {
+        type: 'GET'
+        dataType: 'json'
+        url: '/service/person'
+    }
+
+    paginator_ui: {
+        firstPage: 0
+        currentPage: 0
+        perPage: 20
+        totalPages: 100
+    }
+
+    server_api: {
+    }
 
 
 class App.Demo.View.PersonEdit extends App.Skel.View.EditView
@@ -117,9 +133,18 @@ class App.Demo.View.PersonApp extends App.Skel.View.ModelApp
     modelType: App.Demo.Model.Person
     form: App.Demo.View.PersonEdit
     module: 'Demo'
+    gridFilters: {
+        required: [
+            {
+                name: 'Name'
+                type: 'text'
+                prop: 'n_'
+            }
+        ]
+    }
 
-    #render: =>
-        #super()
+    render: =>
+        super()
 
         #console.log(App.Ui.Smartbox.View.Box)
         #smartbox = new App.Ui.Smartbox.View.Box({})

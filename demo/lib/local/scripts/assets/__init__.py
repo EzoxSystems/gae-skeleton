@@ -5,9 +5,8 @@ BASE_LOCATION = os.getcwdu()
 INPUT_FILES = os.path.join(BASE_LOCATION, 'assets')
 
 
-
 def _bundle_images(app, env, is_skel=False):
-    """Push images into static."""
+    """Copy images into static."""
     #TODO: add png crush or something similar
     import shutil
 
@@ -16,9 +15,8 @@ def _bundle_images(app, env, is_skel=False):
             BASE_LOCATION, '..', 'skel', 'assets', 'img')
         root_dst_dir = os.path.join(BASE_LOCATION, 'static', 'img')
     else:
-        root_src_dir = os.path.join(BASE_LOCATION, 'assests', 'img')
+        root_src_dir = os.path.join(BASE_LOCATION, 'assets', 'img')
         root_dst_dir = os.path.join(BASE_LOCATION, 'static', 'img')
-
 
     for src_dir, dirs, files in os.walk(root_src_dir):
         dst_dir = src_dir.replace(root_src_dir, root_dst_dir)
@@ -29,5 +27,5 @@ def _bundle_images(app, env, is_skel=False):
             dst_file = os.path.join(dst_dir, file_)
             if os.path.exists(dst_file):
                 os.remove(dst_file)
-            shutil.move(src_file, dst_dir)
+            shutil.copy(src_file, dst_dir)
 

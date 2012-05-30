@@ -60,6 +60,7 @@ def _bundle_skel(app_path, env, debug=False):
         path.join(JSPATH, 'jquery-min.js'),
         path.join(JSPATH, 'underscore-min.js'),
         path.join(JSPATH, 'backbone-min.js'),
+        path.join(JSPATH, 'backbone.paginator.min.js'),
         path.join(JSPATH, 'bootstrap.min.js'),
         path.join('js', 'lib', 'bootstrap-typeahead-improved.js'),
     )
@@ -68,10 +69,11 @@ def _bundle_skel(app_path, env, debug=False):
     coffee = (
         path.join(COFFEE_PATH, 'nested.coffee'),
         path.join(COFFEE_PATH, 'app.coffee'),
+        path.join(COFFEE_PATH, 'gridfilter.coffee'),
         path.join(COFFEE_PATH, 'skel.coffee'),
         path.join(COFFEE_PATH, 'channel.coffee'),
         path.join(COFFEE_PATH, 'utils.coffee'),
-        path.join(COFFEE_PATH, 'smartbox.coffee')
+        path.join(COFFEE_PATH, 'smartbox.coffee'),
     )
 
     all_js = Bundle(

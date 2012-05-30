@@ -32,6 +32,7 @@ class App.Skel.View.ModelApp extends App.Skel.View.App
     listView: null
     module: null
     searchMode: true
+    gridFilters: null
 
     events:
         "click .add-button": "add"
@@ -44,9 +45,15 @@ class App.Skel.View.ModelApp extends App.Skel.View.App
         @$el.html(@template())
 
         @listView = new App.Skel.View.ListApp(
-            @module, "#{@modelType.name}List", @$("##{@modelType.name}list"))
+            @module, "#{@modelType.name}List", @.$("##{@modelType.name}list"))
 
         $("#add_new").focus()
+ 
+        if @gridFilters
+            filter = new App.Ui.Gridfilter.FilterView(
+                @gridFilters, @listView.collection)
+            @$('div.view').prepend(filter.render().el)
+
         return this
 
     editItem: (model) =>
@@ -227,7 +234,7 @@ class App.Skel.View.ListApp extends App.Skel.View.App
         @modalView = App[module].View[view]
         @collection = new App[module].Collection[collection]
         @collection.bind('add', @addOne, this)
-        @collection.bind('reset', @addAll, this)
+        @collection.bind('reset', @reset, this)
         @collection.bind('all', @show, this)
         @collection.fetch()
 
@@ -239,3 +246,6 @@ class App.Skel.View.ListApp extends App.Skel.View.App
     addAll: =>
         @collection.each(@addOne)
 
+    reset: =>
+        @el.html('')
+        @addAll()
