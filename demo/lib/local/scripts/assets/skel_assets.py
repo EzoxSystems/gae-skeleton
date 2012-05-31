@@ -48,23 +48,18 @@ def _bundle_skel(app_path, env, debug=False):
     of each library.
     """
 
-    jst = (
-        path.join('jst', '*.jst'),
-        path.join('jst', '*', '*.jst'),
-        path.join('jst', '*', '*', '*.jst'),
-    )
-
-    JSPATH = path.join('js', 'lib', 'min')
+    JSPATH = path.join('js', 'lib')
     third_js = (
-        path.join(JSPATH, 'json2.min.js'),
-        path.join(JSPATH, 'jquery-min.js'),
-        path.join(JSPATH, 'underscore-min.js'),
-        path.join(JSPATH, 'backbone-min.js'),
-        path.join(JSPATH, 'backbone.paginator.min.js'),
-        path.join(JSPATH, 'bootstrap.min.js'),
-        path.join('js', 'lib', 'bootstrap-typeahead-improved.js'),
+        path.join(JSPATH, 'json2.js'),
+        path.join(JSPATH, 'jquery.js'),
+        path.join(JSPATH, 'underscore.js'),
+        path.join(JSPATH, 'backbone.js'),
+        path.join(JSPATH, 'backbone.paginator.js'),
+        path.join(JSPATH, 'bootstrap.js'),
+        path.join(JSPATH, 'bootstrap-typeahead-improved.js'),
     )
 
+    #TOOD: add require so we can simplify this
     COFFEE_PATH = 'coffee'
     coffee = (
         path.join(COFFEE_PATH, 'nested.coffee'),
@@ -77,7 +72,8 @@ def _bundle_skel(app_path, env, debug=False):
     )
 
     all_js = Bundle(
-        Bundle(*jst, filters='jst'),
+        Bundle(
+            path.join('templates', '**', '*.jst'), filters='jst', debug=False),
         Bundle(*third_js),
         Bundle(*coffee, filters='coffeescript'),
         output=path.join(app_path, 'script', 'skel.js'))

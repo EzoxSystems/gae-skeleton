@@ -24,6 +24,7 @@ packages = [
 ]
 
 requires = [
+    'glob2>=0.3',
     'Fabric>=1.4.2',
     'webassets>=0.6',
     'closure>=20120305',
