@@ -144,8 +144,14 @@ class App.Demo.View.PersonListItem extends App.Skel.View.ListItemView
     template: JST['person/list']
 
 
+class App.Demo.View.PersonListHeader extends App.Skel.View.ListItemHeader
+    template: JST['person/listheader']
+
+
 class App.Demo.View.PersonList extends App.Skel.View.ListView
     itemView: App.Demo.View.PersonListItem
+    headerView: App.Demo.View.PersonListHeader
+
     gridFilters: {
         required: [
             {

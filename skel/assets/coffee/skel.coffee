@@ -192,6 +192,7 @@ class App.Skel.View.ListView extends Backbone.View
     className: "view container-fluid well"
     template: JST['ui/grid/view']
     itemView: null
+    headerView: null
 
     initialize: (collection) =>
         @collection = collection
@@ -201,6 +202,9 @@ class App.Skel.View.ListView extends Backbone.View
 
     render: =>
         @$el.html(@template())
+
+        if @headerView
+            @.$("table.table").prepend(new @headerView().render().el)
 
         if @gridFilters
             filter = new App.Ui.Gridfilter.FilterView(@gridFilters, @collection)
@@ -242,3 +246,11 @@ class App.Skel.View.ListItemView extends Backbone.View
 
     delete: =>
         @model.destroy()
+
+
+class App.Skel.View.ListItemHeader extends Backbone.View
+    tagName: "thead"
+
+    render: =>
+        @$el.html(@template())
+        return this
