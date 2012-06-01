@@ -132,29 +132,28 @@ class App.Demo.View.PersonApp extends App.Skel.View.ModelApp
     template: JST['person/view']
     modelType: App.Demo.Model.Person
     form: App.Demo.View.PersonEdit
-    module: 'Demo'
+
+    initialize: =>
+        @collection = new App.Demo.Collection.PersonList()
+        @listView = new App.Demo.View.PersonList(@collection)
+
+        @collection.fetch()
+
+
+class App.Demo.View.PersonListItem extends App.Skel.View.ListItemView
+    template: JST['person/list']
+
+
+class App.Demo.View.PersonList extends App.Skel.View.ListView
+    itemView: App.Demo.View.PersonListItem
     gridFilters: {
         required: [
             {
                 name: 'Name'
                 type: 'text'
-                prop: 'n_'
+                prop: 'name_'
             }
         ]
     }
 
-    render: =>
-        super()
-
-        #console.log(App.Ui.Smartbox.View.Box)
-        #smartbox = new App.Ui.Smartbox.View.Box({})
-        #console.log(smartbox.render().el)
-        #@$el.append(smartbox.render().el)
-
-        #return this
-
-
-class App.Demo.View.PersonList extends App.Skel.View.ListView
-    template: JST['person/list']
-    modelType: App.Demo.Model.Person
 
