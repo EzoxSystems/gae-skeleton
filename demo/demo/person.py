@@ -40,7 +40,7 @@ class Person(ndb.Model):
 
     # Person code, name, key
     name = ndb.StringProperty('n', indexed=False)
-    name_ = ndb.ComputedProperty(lambda self: self.name.lower(), name='n_')
+    name_ = ndb.ComputedProperty(lambda self: self.name.lower(), name='name_')
 
     # Phone / email / whatever.
     contact_info = ndb.JsonProperty('ci')
