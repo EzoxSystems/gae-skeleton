@@ -2,8 +2,8 @@ window.App.Ui.Gridfilter = App.module('gridfilter')
 
 
 class App.Ui.Gridfilter.FilterView extends Backbone.View
-
-    class_name: 'grid_filter span11'
+    tagName: "form"
+    className: "container-fluid form-horizontal"
     template: JST['ui/grid/filter']
 
     events:

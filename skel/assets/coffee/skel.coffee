@@ -204,25 +204,24 @@ class App.Skel.View.ListView extends Backbone.View
         @$el.html(@template())
 
         if @headerView
-            @.$("table.table").prepend(new @headerView().render().el)
+            @$("table.table").prepend(new @headerView().render().el)
 
         if @gridFilters
             filter = new App.Ui.Gridfilter.FilterView(@gridFilters, @collection)
-            @$el.prepend(filter.render().el)
+            @$("#gridfilters").html(filter.render().el)
 
         return this
 
     addOne: (object) =>
         if @itemView
             view = new @itemView({model: object})
-            object.view = view
-            @.$(".listitems").append(view.render().el)
+            @$(".listitems").append(view.render().el)
     
     addAll: =>
         @collection.each(@addOne)
 
     reset: =>
-        @.$(".listitems").html('')
+        @$(".listitems").html('')
         @addAll()
 
 
