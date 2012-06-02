@@ -25,12 +25,10 @@ class App.Skel.View.App extends Backbone.View
 
 class App.Skel.View.ModelApp extends App.Skel.View.App
     template: null
-    modelType: null
     form: null
     addView: null
     editView: null
     listView: null
-    module: null
     searchMode: true
 
     events:
@@ -38,19 +36,20 @@ class App.Skel.View.ModelApp extends App.Skel.View.App
 
     render: =>
         @searchMode = true
-        App.Skel.Event.bind("#{@modelType.name}:add", @addItem, this)
-        App.Skel.Event.bind("#{@modelType.name}:edit", @editItem, this)
+        App.Skel.Event.bind("model:add", @addItem, this)
+        App.Skel.Event.bind("model:edit", @editItem, this)
 
         @$el.html(@template())
 
-        @listView = new App.Skel.View.ListApp(
-            @module, "#{@modelType.name}List", @$("##{@modelType.name}list"))
+        if @listView
+            @$el.append(@listView.render().el)
 
         $("#add_new").focus()
+ 
         return this
 
     editItem: (model) =>
-        App.Skel.Event.bind("#{@modelType.name}:save", this.editSave, this)
+        App.Skel.Event.bind("model:save", this.editSave, this)
 
         @editView = new @form({model: model})
 
@@ -71,9 +70,9 @@ class App.Skel.View.ModelApp extends App.Skel.View.App
             @addClose()
 
     addOpen: =>
-        App.Skel.Event.bind("#{@modelType.name}:save", this.addSave, this)
+        App.Skel.Event.bind("model:save", this.addSave, this)
         App.Skel.Event.unbind(
-            "#{@modelType.name}:save", this.editSave, this)
+            "model:save", this.editSave, this)
 
         @searchMode = false
 
@@ -89,7 +88,7 @@ class App.Skel.View.ModelApp extends App.Skel.View.App
         $("#add_new").text('Search Mode')
 
     addClose: =>
-        App.Skel.Event.unbind("#{@modelType.name}:save", this.addSave, this)
+        App.Skel.Event.unbind("model:save", this.addSave, this)
 
         @searchMode = true
 
@@ -105,11 +104,11 @@ class App.Skel.View.ModelApp extends App.Skel.View.App
         valid = @addView.model.isValid()
 
         if valid
-            App.Skel.Event.trigger("#{@modelType.name}:add", model)
+            App.Skel.Event.trigger("model:add", model)
             @addOpen()
 
     editSave: (model) =>
-        App.Skel.Event.unbind("#{@modelType.name}:save", this.editSave, this)
+        App.Skel.Event.unbind("model:save", this.editSave, this)
         if @editView
             @editView.$el.modal('hide')
             @editView.close()
@@ -128,7 +127,6 @@ class App.Skel.View.ModelApp extends App.Skel.View.App
 
 class App.Skel.View.EditView extends Backbone.View
     tagName: "div"
-    modelType: null
     isModal: false
     focusButton: null
 
@@ -172,7 +170,7 @@ class App.Skel.View.EditView extends Backbone.View
         return this
 
     save: (params) =>
-        App.Skel.Event.trigger("#{@modelType.name}:save", @model, this)
+        App.Skel.Event.trigger("model:save", @model, this)
 
         if @model.isValid()
             App.Util.Form.hideAlert()
@@ -191,8 +189,44 @@ class App.Skel.View.EditView extends Backbone.View
 
 
 class App.Skel.View.ListView extends Backbone.View
+    className: "view container-fluid well"
+    template: JST['ui/grid/view']
+    itemView: null
+    headerView: null
+
+    initialize: (collection) =>
+        @collection = collection
+        @collection.bind('add', @addOne, this)
+        @collection.bind('reset', @reset, this)
+        @collection.bind('all', @show, this)
+
+    render: =>
+        @$el.html(@template())
+
+        if @headerView
+            @$("table.table").prepend(new @headerView().render().el)
+
+        if @gridFilters
+            filter = new App.Ui.Gridfilter.FilterView(@gridFilters, @collection)
+            @$("#gridfilters").html(filter.render().el)
+
+        return this
+
+    addOne: (object) =>
+        if @itemView
+            view = new @itemView({model: object})
+            @$(".listitems").append(view.render().el)
+    
+    addAll: =>
+        @collection.each(@addOne)
+
+    reset: =>
+        @$(".listitems").html('')
+        @addAll()
+
+
+class App.Skel.View.ListItemView extends Backbone.View
     tagName: "tr"
-    modelType: null
 
     events:
         "click .edit-button": "edit"
@@ -207,35 +241,15 @@ class App.Skel.View.ListView extends Backbone.View
         return this
 
     edit: =>
-        App.Skel.Event.trigger("#{@modelType.name}:edit", @model, this)
+        App.Skel.Event.trigger("model:edit", @model, this)
 
     delete: =>
         @model.destroy()
 
 
-class App.Skel.View.ListApp extends App.Skel.View.App
+class App.Skel.View.ListItemHeader extends Backbone.View
+    tagName: "thead"
 
-    initialize: (module, view, el, collection) ->
-        if el
-            @el = el
-        else
-            @el = @$el
-
-        if not collection
-            collection = view
-
-        @modalView = App[module].View[view]
-        @collection = new App[module].Collection[collection]
-        @collection.bind('add', @addOne, this)
-        @collection.bind('reset', @addAll, this)
-        @collection.bind('all', @show, this)
-        @collection.fetch()
-
-    addOne: (object) =>
-        view = new @modalView({model: object})
-        object.view = view
-        @el.append(view.render().el)
-
-    addAll: =>
-        @collection.each(@addOne)
-
+    render: =>
+        @$el.html(@template())
+        return this

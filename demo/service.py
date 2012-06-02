@@ -30,7 +30,8 @@ if libs_dir not in sys.path:
 import webapp2
 
 url_map = [
-    ('.*/person.*', 'demo.service.PersonHandler'),
+    ('.*/person/?(.*)', 'demo.service.PersonListHandler'),
+    ('.*/person/<resource_id:.+>/?(.*)', 'demo.service.PersonHandler'),
 ]
 
 app = webapp2.WSGIApplication(url_map)

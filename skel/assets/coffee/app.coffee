@@ -44,5 +44,7 @@ window.App = (() ->
                 Event: _.extend({}, Backbone.Events)
             }
     )()
+
+    Ui: {}
 )()
 

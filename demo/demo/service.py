@@ -20,68 +20,27 @@
 If this file gets large (say over 500 hundred lines), we suggest breaking
 it up into a package.
 """
-
-import json
 import logging
 
-import webapp2
+from skel.rest_api import handler as rest_handler
 
 
-class PersonHandler(webapp2.RequestHandler):
-    def get(self):
-        from demo.person import Person
-        user_query = self.request.get('query')
-        limit = int(self.request.get('limit', 10))
+class PersonHandler(rest_handler.RestApiHandler):
 
-        query = Person.query()
-        if user_query:
-            search = user_query.strip().lower()
-            query = query.filter(Person.n_ >= search)
-            query = query.filter(Person.n_ < search + u"\uFFFD")
-
-        if limit > 0:
-            query = query.fetch(limit)
-
-        out = [entity.to_dict() for entity in query]
-        self.response.out.write(json.dumps(out))
-
-    def delete(self):
-        from google.appengine.ext import ndb
-        from demo.person import Person
-        urlsafe = self.request.path.rsplit('/', 1)[-1]
-        if not urlsafe:
-            return
-
-        key = ndb.Key(urlsafe=urlsafe)
-        if key.kind() != Person._get_kind():
-            self.error(500)
-            return
-
-        key.delete()
-        logging.info("Deleted person with key: %s", urlsafe)
-
-    def post(self):
-        self.process()
-
-    def put(self):
-        self.process()
-
-    def process(self):
-        from voluptuous import Schema
+    def __init__(self, request=None, response=None):
         from demo.person import Person
         from demo.person import person_schema
 
-        person = json.loads(self.request.body)
-        schema = Schema(person_schema, extra=True)
-        try:
-            schema(person)
-        except:
-            logging.exception('validation failed')
-            logging.info(person)
+        super(PersonHandler, self).__init__(
+            Person, person_schema, request, response)
 
-        person_entity = Person.from_dict(person)
-        person_entity.put()
 
-        out = person_entity.to_dict()
-        self.response.out.write(json.dumps(out))
+class PersonListHandler(rest_handler.RestApiListHandler):
+
+    def __init__(self, request=None, response=None):
+        from demo.person import Person
+        from demo.person import person_schema
+
+        super(PersonListHandler, self).__init__(
+            Person, person_schema, request, response)
 
