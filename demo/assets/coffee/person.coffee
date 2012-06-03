@@ -44,7 +44,6 @@ class App.Demo.Model.Person extends Backbone.Model
 
 
 class App.Demo.Collection.PersonList extends Backbone.Paginator.requestPager
-    #url: '/service/person'
     model: App.Demo.Model.Person
 
     paginator_core: {
@@ -151,15 +150,22 @@ class App.Demo.View.PersonListHeader extends App.Skel.View.ListItemHeader
 class App.Demo.View.PersonList extends App.Skel.View.ListView
     itemView: App.Demo.View.PersonListItem
     headerView: App.Demo.View.PersonListHeader
+    gridFilters: null
 
-    gridFilters: {
-        required: [
+    initialize: (collection) =>
+        defaultList = new App.Ui.Datagrid.FilterList()
+        defaultList.add(new App.Ui.Datagrid.FilterItem(
             {
                 name: 'Name'
                 type: 'text'
-                prop: 'name_'
-            }
-        ]
-    }
+                prop: 'name'
+                datastore_prop: 'name_'
+                control: null
+            }))
 
+        @gridFilters = {
+            default: defaultList
+            optional: null
+        }
 
+        super(collection)

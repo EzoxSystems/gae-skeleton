@@ -207,7 +207,7 @@ class App.Skel.View.ListView extends Backbone.View
             @$("table.table").prepend(new @headerView().render().el)
 
         if @gridFilters
-            filter = new App.Ui.Gridfilter.FilterView(@gridFilters, @collection)
+            filter = new App.Ui.Datagrid.GridView(@gridFilters, @collection)
             @$("#gridfilters").html(filter.render().el)
 
         return this
