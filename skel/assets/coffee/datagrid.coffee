@@ -10,6 +10,7 @@ class App.Ui.Datagrid.FilterItem extends Backbone.Model
             name: ""
             datastore_prop: null
             control: null
+            default: false
         }
 
 
@@ -21,7 +22,9 @@ class App.Ui.Datagrid.GridView extends Backbone.View
     tagName: "form"
     className: "container-fluid form-horizontal"
     template: JST['ui/grid/filter']
+    option_template: JST['ui/grid/select_item']
     views: null
+    filters: null
 
     events:
         "keypress .filter-input": "updateOnEnter"
@@ -29,29 +32,36 @@ class App.Ui.Datagrid.GridView extends Backbone.View
         "click #add_optional": "addOptional"
 
     initialize: (gridFilter, collection) =>
-        @views = []
+        @views = {}
         @gridFilter = gridFilter
         @collection = collection
-        App.Skel.Event.bind("filter:removeDefault", @removeDefaultFilter, this)
+        App.Skel.Event.bind("filter:removeDefault", @removeFilter, this)
+
+    addItem: (gridFilter) =>
+        view = new App.Ui.Datagrid.FilterItemView({model: gridFilter})
+        prop = gridFilter.get('prop')
+        @views[prop] = view
+        @$("#filters").append(view.render().el)
 
     render: =>
         @$el.html(@template())
 
-        if @gridFilter.default
-            req = @$("#default_filters")
-
-            @gridFilter.default.each((gridFilter, i) =>
-                view = new App.Ui.Datagrid.DefaultFilterItemView(
-                        {model: gridFilter})
-                @views.push(view)
-                req.append(view.render().el)
-            )
-
-        if @gridFilter.optional
-            opts = @$("#optional_filters")
-            opts.css('display', 'block')
+        @gridFilter.each((gridFilter, i) =>
+            if gridFilter.get('default')
+                @addItem(gridFilter)
+            else
+                @addSelectOption(gridFilter)
+        )
 
         return this
+
+    addSelectOption: (gridFilter) =>
+        @$("select#filter_options").append($(@option_template(
+            {
+                name: gridFilter.get('name')
+                value: gridFilter.get('prop')
+            }
+        )))
 
     updateOnEnter: (e) =>
         if e.keyCode == 13
@@ -62,36 +72,52 @@ class App.Ui.Datagrid.GridView extends Backbone.View
             e.preventDefault()
 
         @collection.server_api = {}
-        @gridFilter.default.each((gridFilter, i) =>
-            val = @$("##{gridFilter.get('name')}").val()
-            datastore_prop = gridFilter.get('datastore_prop')
-            if not datastore_prop
-                datastore_prop = gridFilter.get('prop')
 
-            @collection.server_api["feq_#{datastore_prop}"] = val
-        )
+        for prop, view of @views
+            console.log(prop)
+            console.log(@views)
+            console.log(@gridFilter)
+            gridFilter = @gridFilter.get(prop)
+            console.log(gridFilter)
+
+            if gridFilter
+                val = @$("##{gridFilter.get('name')}").val()
+                datastore_prop = gridFilter.get('datastore_prop')
+                if not datastore_prop
+                    datastore_prop = gridFilter.get('prop')
+
+                @collection.server_api["feq_#{datastore_prop}"] = val
 
         @collection.fetch({})
 
         return false
 
     addOptional: =>
-        console.log('add optional')
+        prop = @$("select#filter_options").val()
 
-    removeDefaultFilter: (filter) =>
-        @gridFilter.default.remove(filter)
+        item = @gridFilter.get(prop)
+        if item
+            @addItem(item)
+            @$("option#filter-option-#{item.get('name')}").remove()
+
+    removeFilter: (filter) =>
+        prop = filter.get('prop')
+        @views[prop].close()
+        delete @views[prop]
+        @addSelectOption(filter)
 
     onClose: =>
         App.Skel.Event.unbind(null, null, this)
-        for view in @views
+
+        for k, view of @views
             view.close()
 
 
-class App.Ui.Datagrid.DefaultFilterItemView extends Backbone.View
+class App.Ui.Datagrid.FilterItemView extends Backbone.View
     className: "control-group"
     template: JST['ui/grid/filter_item']
     remove_template: JST['ui/remove_button']
-    prop: null
+    key: null
 
     initialize: =>
         @prop = @model.get('prop')
@@ -105,6 +131,8 @@ class App.Ui.Datagrid.DefaultFilterItemView extends Backbone.View
         controlView = @model.get('control')
         if not controlView
             controlView = new App.Ui.Datagrid.InputFilter({model: @model})
+        else
+            controlView = new controlView({model: @model})
 
         @$el.append(controlView.render().el)
 
@@ -124,6 +152,10 @@ class App.Ui.Datagrid.DefaultFilterItemView extends Backbone.View
 class App.Ui.Datagrid.FilterControlView extends Backbone.View
     className: "controls"
     template: null
+    inputId: null
+
+    initialize: (inputId) =>
+        @inputId = inputId
 
     render: =>
         @$el.html(@template(@model.toJSON()))
@@ -133,3 +165,4 @@ class App.Ui.Datagrid.FilterControlView extends Backbone.View
 
 class App.Ui.Datagrid.InputFilter extends App.Ui.Datagrid.FilterControlView
     template: JST['ui/grid/input_filter']
+

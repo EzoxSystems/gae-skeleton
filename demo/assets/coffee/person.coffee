@@ -153,19 +153,34 @@ class App.Demo.View.PersonList extends App.Skel.View.ListView
     gridFilters: null
 
     initialize: (collection) =>
-        defaultList = new App.Ui.Datagrid.FilterList()
-        defaultList.add(new App.Ui.Datagrid.FilterItem(
+        @gridFilters = new App.Ui.Datagrid.FilterList()
+        @gridFilters.add(new App.Ui.Datagrid.FilterItem(
             {
                 name: 'Name'
                 type: 'text'
                 prop: 'name'
                 datastore_prop: 'name_'
                 control: null
-            }))
-
-        @gridFilters = {
-            default: defaultList
-            optional: null
-        }
+                default: true
+            })
+        )
+        @gridFilters.add(new App.Ui.Datagrid.FilterItem(
+            {
+                name: 'Contact'
+                type: 'text'
+                prop: 'contact'
+                datastore_prop: 'contact_info'
+                control: null
+            })
+        )
+        @gridFilters.add(new App.Ui.Datagrid.FilterItem(
+            {
+                name: 'Notes'
+                type: 'text'
+                prop: 'notes'
+                datastore_prop: 'notes'
+                control: null
+            })
+        )
 
         super(collection)
