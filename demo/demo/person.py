@@ -19,6 +19,8 @@
 
 from google.appengine.ext import ndb
 
+from skel.datastore import EntityBase
+
 person_schema = {
     'key': basestring,
     'name': basestring,
@@ -26,17 +28,15 @@ person_schema = {
     'contact_info': [{'type': basestring, 'value': basestring}],
 }
 
-class Person(ndb.Model):
+class Person(EntityBase):
     """Represents a person."""
+
+    _query_properties = {
+        'name': 'name_'
+    }
+
     # Store the schema version, to aid in migrations.
     version_ = ndb.IntegerProperty('v_', default=1)
-
-    # The entity's change revision counter.
-    revision = ndb.IntegerProperty('r_', default=0)
-
-    # Useful timestamps.
-    added = ndb.DateTimeProperty('a_', auto_now_add=True)
-    modified = ndb.DateTimeProperty('m_', auto_now=True)
 
     # Person code, name, key
     name = ndb.StringProperty('n', indexed=False)
@@ -47,10 +47,6 @@ class Person(ndb.Model):
 
     # General remarks.
     notes = ndb.TextProperty('no')
-
-    def _pre_put_hook(self):
-        """Ran before the entity is written to the datastore."""
-        self.revision += 1
 
     @classmethod
     def from_dict(cls, data):
@@ -76,11 +72,6 @@ class Person(ndb.Model):
         """
         person = {
             'version': self.version_,
-            'key': self.key.urlsafe(),
-            'revision': self.revision,
-            'added': self.added.strftime('%Y-%m-%d %h:%M'),
-            'modified': self.modified.strftime('%Y-%m-%d %h:%M'),
-
             # name
             'name': self.name,
 
@@ -90,5 +81,6 @@ class Person(ndb.Model):
             # Notes
             'notes': self.notes,
         }
-        return person
 
+        person.update(self._default_dict())
+        return person

@@ -159,7 +159,6 @@ class App.Demo.View.PersonList extends App.Skel.View.ListView
                 name: 'Name'
                 type: 'text'
                 prop: 'name'
-                datastore_prop: 'name_'
                 control: null
                 default: true
             })
@@ -169,7 +168,6 @@ class App.Demo.View.PersonList extends App.Skel.View.ListView
                 name: 'Contact'
                 type: 'text'
                 prop: 'contact'
-                datastore_prop: 'contact_info'
                 control: null
             })
         )
@@ -178,7 +176,6 @@ class App.Demo.View.PersonList extends App.Skel.View.ListView
                 name: 'Notes'
                 type: 'text'
                 prop: 'notes'
-                datastore_prop: 'notes'
                 control: null
             })
         )
