@@ -64,7 +64,7 @@ def _bundle_skel(app_path, env, debug=False):
     coffee = (
         path.join(COFFEE_PATH, 'nested.coffee'),
         path.join(COFFEE_PATH, 'app.coffee'),
-        path.join(COFFEE_PATH, 'gridfilter.coffee'),
+        path.join(COFFEE_PATH, 'datagrid.coffee'),
         path.join(COFFEE_PATH, 'skel.coffee'),
         path.join(COFFEE_PATH, 'channel.coffee'),
         path.join(COFFEE_PATH, 'utils.coffee'),

@@ -3,6 +3,8 @@ import logging
 
 import webapp2
 
+from skel.datastore import EntityBase
+
 
 class JsonHandler(webapp2.RequestHandler):
 
@@ -116,7 +118,7 @@ class RestQuery(object):
         logging.info("**********PARSING QUERY***********")
         logging.info(params)
         for prop, value in params.iteritems():
-            logging.info(prop)
+
             psplit = prop.split('_')
             if len(psplit) < 2:
                 continue
@@ -125,7 +127,11 @@ class RestQuery(object):
             if f not in filters:
                 continue
 
-            prop = getattr(entity, '_'.join(psplit[1:]))
+            prop_string = '_'.join(psplit[1:])
+            if issubclass(entity, EntityBase):
+                prop = entity.get_query_property(prop_string)
+            else:
+                prop = getattr(entity, prop_string)
 
             logging.info("Adding query")
             query = self.query_filters.get(
