@@ -163,21 +163,5 @@ class App.Demo.View.PersonList extends App.Skel.View.ListView
                 default: true
             })
         )
-        @gridFilters.add(new App.Ui.Datagrid.FilterItem(
-            {
-                name: 'Contact'
-                type: 'text'
-                prop: 'contact'
-                control: null
-            })
-        )
-        @gridFilters.add(new App.Ui.Datagrid.FilterItem(
-            {
-                name: 'Notes'
-                type: 'text'
-                prop: 'notes'
-                control: null
-            })
-        )
 
         super(collection)

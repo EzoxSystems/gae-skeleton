@@ -43,9 +43,10 @@ class EntityBase(ndb.Model):
             'modified': self.modified.strftime('%Y-%m-%d %H:%M'), # TODO: Standardize
         }
 
-    def get_query_property(self, prop):
+    @classmethod
+    def get_query_property(cls, prop):
         """Return the property to use in a query"""
-        if prop in self._query_properties:
-            return self._query_properties[prop]
+        if prop in cls._query_properties:
+            prop = cls._query_properties[prop]
 
-        return getattr(self, prop)
+        return getattr(cls, prop)
