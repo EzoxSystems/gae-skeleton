@@ -26,24 +26,37 @@ Backbone.Model::nestModel = (attributeName, nestedModel) ->
     @attributes[attributeName] = nestedModel.attributes
 
     # On changes directly to 'this.attributeName', update nestedModel and resync.
-    @on("change:#{attributeName}", (model, changes) =>
-        if changes?._skel_source__ == nestedModel
+    @on("change:#{attributeName}", (model, change, options) =>
+        options || (options = {})
+        if options?._skel_source__ == nestedModel
             # Event was caused by a direct update to nestedModel, ignore.
             return
 
-        nestedModel.set(@get(attributeName), {_skel_source__: this})
+        set_options = _.extend({}, options, {_skel_source__: this})
+        nestedModel.set(@get(attributeName), set_options)
+        # Ensure we're synced up.
         @attributes[attributeName] = nestedModel.attributes
     )
 
     # On direct changes to nestedModel, fire change events on 'this'.
-    nestedModel.on("change", (model, changes) =>
-        if changes?._skel_source__ == this
+    nestedModel.on("change", (model, options) =>
+        if options?._skel_source__ == this
             # Event was caused by a direct update to 'this', ignore.
             return
 
-        changes = {_skel_source__: nestedModel, changes: {}}
+        changes = {}
         changes[attributeName] = true
-        @trigger("change change:#{attributeName}", this, changes)
+        change_options = _.extend(
+            {}, options, {_skel_source__: nestedModel, changes: changes})
+
+        # Ensure we're synced up.
+        @attributes[attributeName] = nestedModel.attributes
+        # Match the "natural" event that would be fired.
+        @changed[attributeName] = @get(attributeName)
+        # Cause @changed to be cleaned up.
+        @_pending[attributeName] = true
+        # Fire the proper events on 'this'.
+        @change(change_options)
     )
     return nestedModel
 
