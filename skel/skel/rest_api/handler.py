@@ -110,7 +110,7 @@ class RestApiListHandler(RestApiSaveHandler):
 
 class RestQuery(object):
 
-    def __init__(self, default_filters=None):
+    def __init__(self, default_filters=None, **kwargs):
         self.default_filters = default_filters if default_filters else []
 
     def fetch(self, entity, params, query_schema=None):

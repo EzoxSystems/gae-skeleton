@@ -38,7 +38,7 @@ class Person(EntityBase):
     """Represents a person."""
 
     _query_properties = {
-        'name': RestQueryRule('n_', lambda x: x.lower(), False)
+        'name': RestQueryRule('name_', lambda x: x.lower(), False)
     }
 
     # Store the schema version, to aid in migrations.

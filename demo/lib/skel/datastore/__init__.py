@@ -46,7 +46,4 @@ class EntityBase(ndb.Model):
     @classmethod
     def get_query_property(cls, prop):
         """Return the property to use in a query"""
-        if prop in cls._query_properties:
-            prop = cls._query_properties[prop]
-
-        return getattr(cls, prop)
+        return cls._query_properties.get(prop)

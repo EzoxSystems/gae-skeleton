@@ -231,6 +231,8 @@ class App.Skel.View.ListView extends Backbone.View
 
         @collection.fetch()
 
+        return false
+
     addOne: (object) =>
         if @itemView
             view = new @itemView({model: object})

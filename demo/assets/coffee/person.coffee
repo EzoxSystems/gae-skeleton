@@ -156,8 +156,8 @@ class App.Demo.View.PersonList extends App.Skel.View.ListView
             {
                 name: 'Name'
                 type: 'text'
-                prop: 'name'
-                control: null
+                prop: 'flike_name'
+                control: App.Ui.Datagrid.InputFilter
                 default: true
             })
         )
