@@ -1,7 +1,21 @@
+@default_control_label_width: 100px;
+@default_control_label_padding: 120px;
+
 .hidden {
   display: none;
 }
-#demoapp {
+.navbar-fixed-top .brand {
+  float: right;
+  color: #000;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .1), 0 0 30px rgba(255, 255, 255, .125);
+}
+@media (max-width: 980px) {
+    .navbar-fixed-top .brand {
+      float: left;
+      color: #999;
+    }
+}
+#dispatchapp {
   margin-top: 70px;
 
   .add-button {
@@ -9,12 +23,23 @@
   }
 }
 #add_area {
-  margin: 10px 0 10px 0;
+  margin: 5px 0 5px 0;
+}
+.top_view {
+  padding: 0px;
+  margin: 0;
+  clear: both;
+
+  h1 {
+    padding: 4px;
+  }
+
+  .btn_holder, .status-bar {
+    padding: 4px;
+  }
 }
 .view {
-  margin: 0 0 5px 0;
   padding: 0;
-  width: 100%;
   clear: both;
 
   .row {
@@ -53,18 +78,6 @@
     }
   }
 }
-
-.footer {
-  padding-top: 25px;
-  background-color: #d9edf7;
-  border: 1px solid #ddd;
-  text: white;
-}
-
-.footer, .push {
-  height: 2.5em;
-}
-
 .grid-row {
   padding: 0;
   margin: 0;
@@ -82,11 +95,211 @@
   padding: 8px 9px 8px;
 }
 .modal-body {
-  padding: 8px;
+  padding: 0px;
+  overflow-y: visible;
+  overflow-x: hidden;
 }
 .control-group {
-  margin: 0 0 2px 0;
+  margin: 0px;
+  padding: 0px;
+}
+.edit .modal-body .control-group {
+  margin: 0px;
+  padding: 2px;
 }
 .modal-header {
   padding: 5px;
 }
+.controls {
+  padding: 0px;
+  margin: 0px;
+}
+.control-label {
+  padding: 0px;
+}
+.form-horizontal {
+  .control-label {
+    width: @default_control_label_width
+  }
+  .controls {
+    margin-left: @default_control_label_padding
+  }
+  .controls:first-child {
+    *padding-left: @default_control_label_padding
+  }
+  .control-group {
+    padding: 2px;
+    margin: 2px;
+  }
+}
+.call {
+  .dl-horizontal{
+    margin-bottom: 5px;
+    dt {
+      width: 60px;
+    }
+    dd {
+      margin-left: 70px;
+    }
+  }
+}
+.listitems {
+  .selectable {
+    padding: 0;
+    margin: 0;
+
+    td {
+      padding: 2px;
+    }
+  }
+}
+.gridFooter {
+
+  background-color: #EEE;
+  border-top: 1px solid #DDD;
+
+  .filter-controls {
+    text-align: right;
+    float: right;
+    padding-top: 4px;
+
+     label, select, button {
+        float: left;
+      }
+
+      .controls {
+        float: right;
+      }
+  }
+
+  .size-label {
+    padding: 5px 2px 0 0;
+    width: 55px;
+  }
+
+  .size-select {
+    width: 60px;
+    margin-right: 5px;
+  }
+}
+.gridfilters {
+  background-color: #EEE;
+  border-bottom: 1px solid #DDD;
+
+  form {
+    padding: 0px;
+    margin: 0 0 5px 0;
+
+    .container-fluid {
+      padding: 0px;
+    }
+  }
+
+  .control-label {
+    padding-right: 2px;
+  }
+
+  .filter-controls {
+    text-align: right;
+    float: right;
+
+     label, select, button {
+        float: left;
+      }
+
+     button {
+        margin: 0 3px 0 13px;
+      }
+
+      .controls {
+        float: right;
+      }
+  }
+
+  .filter_options {
+    width: 140px;
+  }
+
+  .optional-controls {
+    display: none;
+    float: left;
+  }
+
+  .filters {
+    float: left;
+    .control-group {
+      display: block;
+      float: left;
+
+      label {
+        display: inline-block;
+        float: left;
+        text-align: right;
+        padding: 5px 2px 0 5px;
+      }
+
+      .controls {
+        float: left;
+
+        input {
+          width: 150px;
+        }
+
+        button {
+          padding: 2px 4px 2px 4px;
+        }
+
+        .checkbox {
+          width: 20px;
+        }
+      }
+    }
+  }
+}
+.smalllist .gridfilters {
+  .filter-controls {
+    display: inline-block;
+    width: 100%;
+  }
+
+  .filter_options {
+    width: 140px;
+  }
+
+  .optional-controls {
+    display: none;
+    float: right;
+  }
+
+  .filters {
+    float: right;
+    .control-group {
+      display: block;
+      float: right;
+
+      label {
+        display: inline-block;
+        float: left;
+        text-align: right;
+        padding: 5px 2px 0 5px;
+      }
+
+      .controls {
+        float: left;
+
+        input {
+          width: 150px;
+        }
+
+        button {
+          padding: 2px 4px 2px 4px;
+        }
+
+        .checkbox {
+          width: 20px;
+        }
+      }
+    }
+  }
+}
+.modal {width:840px;left:41%;}

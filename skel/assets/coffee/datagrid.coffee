@@ -10,6 +10,8 @@ class App.Ui.Datagrid.FilterItem extends Backbone.Model
             name: ""
             control: null
             default: false
+            default_value: ""
+            not_with: []
         }
 
 
@@ -23,24 +25,24 @@ class App.Ui.Datagrid.GridView extends Backbone.View
     template: JST['ui/grid/filter']
     optionTemplate: JST['ui/grid/select_item']
     views: null
-    optional: 0
 
     events:
-        "keypress .filter-input": "updateOnEnter"
-        "click button#filter_button": "runFilter"
-        "click button#add_optional": "addOptional"
+        "click button.filter-button": "runFilter"
+        "click button.add-optional": "addOptional"
 
-    initialize: (gridFilters, collection) =>
+    initialize: () =>
         @views = {}
-        @gridFilters = gridFilters
-        @collection = collection
-        App.Skel.Event.bind("filter:remove", @removeFilter, this)
+        @gridFilters = @options.gridFilters
+        @collection = @options.collection
 
     addItem: (gridFilter) =>
         view = new App.Ui.Datagrid.FilterItemView({model: gridFilter})
+        App.Skel.Event.bind("filter:remove:#{gridFilter.cid}", @removeFilter, this)
+        App.Skel.Event.bind("filter:run:#{gridFilter.cid}", @runFilter, this)
+
         prop = gridFilter.get('prop')
         @views[prop] = view
-        @$("#filters").append(view.render().el)
+        @$(".filters").append(view.render().el)
 
     render: =>
         @$el.html(@template())
@@ -50,7 +52,6 @@ class App.Ui.Datagrid.GridView extends Backbone.View
                 @addItem(gridFilter)
             else
                 @addSelectOption(gridFilter)
-                @optional += 1
         )
 
         @checkShowSelect()
@@ -60,15 +61,22 @@ class App.Ui.Datagrid.GridView extends Backbone.View
     checkShowSelect: =>
         #i was debating doing the check with selects but am trying to avoid
         #uneeded jquery selects
-        if @optional == 1
-            @$("select#filter_options").css('display', 'inline')
-            @$("button#add_optional").css('display', 'inline')
-        else if @optional == 0
-            @$("select#filter_options").css('display', 'none')
-            @$("button#add_optional").css('display', 'none')
+        if @$("select.filter_options").children().length > 0
+            @$("div.optional-controls").css('display', 'block')
+        else
+            @$("div.optional-controls").css('display', 'none')
 
     addSelectOption: (gridFilter) =>
-        @$("select#filter_options").append($(@optionTemplate(
+        #check if this select option is in the not_with list for our visible
+        #filters
+
+        #TODO: look at using underscore difference operators here to clean this
+        #up
+        for key, view of @views
+            if view.model.get('not_with') and gridFilter.get('prop') in view.model.get('not_with')
+                return
+
+        @$("select.filter_options").append($(@optionTemplate(
             {
                 name: gridFilter.get('name')
                 value: gridFilter.get('prop')
@@ -77,46 +85,47 @@ class App.Ui.Datagrid.GridView extends Backbone.View
 
         @checkShowSelect()
 
-    updateOnEnter: (e) =>
-        if e.keyCode == 13
-            return runFilter(e)
-
     runFilter: (e) =>
-        if e
-            e.preventDefault()
-
-        @collection.server_api = {}
-
+        filters = {}
         for prop, view of @views
-            gridFilter = @gridFilters.get(prop)
+            filters = _.extend(filters, view.addFilter(@collection.server_api))
 
-            if gridFilter
-                val = @$("##{gridFilter.get('name')}").val()
-
-                @collection.server_api["feq_#{gridFilter.get('prop')}"] = val
-
-        @collection.fetch()
+        App.Skel.Event.trigger("filter:run:#{@.cid}", filters)
 
         return false
 
     addOptional: =>
-        prop = @$("select#filter_options").val()
+        prop = @$("select.filter_options").val()
 
         item = @gridFilters.get(prop)
         if item
             @addItem(item)
-            @$("option#filter-option-#{item.get('name')}").remove()
+            @$("select.filter_options option[value='#{item.get('prop')}']").remove()
 
-            @optional -= 1
+            if item.get('not_with')
+                for p in item.get('not_with')
+                    @$("select.filter_options option[value='#{p}']").remove()
 
             @checkShowSelect()
 
+        return false
+
     removeFilter: (filter) =>
-        @optional += 1
+        App.Skel.Event.unbind("filter:remove:#{filter.cid}", null, this)
+        App.Skel.Event.unbind("filter:run:#{filter.cid}", null, this)
         prop = filter.get('prop')
-        @views[prop].close()
-        delete @views[prop]
+        if prop of @views
+            @views[prop].close()
+            delete @views[prop]
+
         @addSelectOption(filter)
+
+        @gridFilters.each((gridFilter, i) =>
+            if filter.get('not_with') and gridFilter.get('prop') in filter.get('not_with')
+                @addSelectOption(gridFilter)
+        )
+
+        return false
 
     onClose: =>
         App.Skel.Event.unbind(null, null, this)
@@ -137,27 +146,35 @@ class App.Ui.Datagrid.FilterItemView extends Backbone.View
     template: JST['ui/grid/filter_item']
     removeTemplate: JST['ui/remove_button']
     key: null
+    controlView: null
+
+    events:
+        "keypress .filter-input": "updateOnEnter"
+        "click .remove-filter": "removeFilter"
 
     initialize: =>
         @prop = @model.get('prop')
-        @events = {}
-        #for some reason I had to use this syntax for this
-        @events["click ##{@prop}"] = "removeFilter"
+
+    updateOnEnter: (e) =>
+        if e.keyCode == 13
+            App.Skel.Event.trigger("filter:run:#{@model.cid}", @model)
+            return false
+
+        return true
 
     render: =>
         @$el.html(@template(@model.toJSON()))
 
         if @model.view
-            controlView = @model.view
+            @controlView = @model.view
         else
-            controlView = @model.get('control')
-            if not controlView
-                controlView = new App.Ui.Datagrid.InputFilter({model: @model})
+            modelView = @model.get('control')
+            if not modelView
+                @controlView = new App.Ui.Datagrid.InputFilter({model: @model})
             else
-                controlView = new controlView({model: @model})
+                @controlView = new modelView({model: @model})
 
-        @$el.append(controlView.render().el)
-
+        @$el.append(@controlView.render().el)
         @$(".controls").append($(@removeTemplate({id: @prop})))
 
         return this
@@ -166,9 +183,13 @@ class App.Ui.Datagrid.FilterItemView extends Backbone.View
         if e
             e.preventDefault()
 
-        App.Skel.Event.trigger('filter:remove', @model)
-
+        App.Skel.Event.trigger("filter:remove:#{@model.cid}", @model)
         @close()
+
+        return false
+
+    addFilter: (filters) =>
+        return @controlView.addFilter(filters)
 
 
 class App.Ui.Datagrid.FilterControlView extends Backbone.View
@@ -181,7 +202,38 @@ class App.Ui.Datagrid.FilterControlView extends Backbone.View
 
         return this
 
+    addFilter: (filters) =>
+        throw "Not implemented"
+
 
 class App.Ui.Datagrid.InputFilter extends App.Ui.Datagrid.FilterControlView
     template: JST['ui/grid/input_filter']
 
+    addFilter: (filters) =>
+        val = @$("##{@model.get('prop')}").val()
+        filters["#{@model.get('prop')}"] = val
+
+        return filters
+
+
+class App.Ui.Datagrid.CheckboxFilter extends App.Ui.Datagrid.FilterControlView
+    template: JST['ui/grid/checkbox_filter']
+
+    addFilter: (filters) =>
+        val = @$("##{@model.get('prop')}").is(':checked')
+        filters["#{@model.get('prop')}"] = val
+
+        return filters
+
+
+class App.Ui.Datagrid.TypeaheadFilter extends App.Ui.Datagrid.FilterControlView
+    template: JST['ui/grid/input_filter']
+    value: null
+
+    addFilter: (filters) =>
+        filters["#{@model.get('prop')}"] = @value ? ''
+
+        return filters
+
+    onClose: =>
+        @$('input.filter-input').trigger('cleanup')

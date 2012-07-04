@@ -20,6 +20,7 @@
 from google.appengine.ext import ndb
 
 from skel.datastore import EntityBase
+from skel.rest_api.rules import RestQueryRule
 
 person_schema = {
     'key': basestring,
@@ -28,11 +29,16 @@ person_schema = {
     'contact_info': [{'type': basestring, 'value': basestring}],
 }
 
+person_query_schema = {
+    'flike_name': basestring
+}
+
+
 class Person(EntityBase):
     """Represents a person."""
 
     _query_properties = {
-        'name': 'name_'
+        'name': RestQueryRule('name_', lambda x: x.lower(), False)
     }
 
     # Store the schema version, to aid in migrations.

@@ -44,24 +44,25 @@ def _bundle_skel(app_path, env, debug=False):
     """Combine thrid party js libs into libs.js.
 
     For debug, they are left uncompressed.  For production the minified
-    versions are used.  We suggest using hte vendor supplied minified version
+    versions are used.  We suggest using the vendor supplied minified version
     of each library.
     """
 
-    JSPATH = path.join('js', 'lib')
-    third_js = (
-        path.join(JSPATH, 'json2.js'),
-        path.join(JSPATH, 'jquery.js'),
-        path.join(JSPATH, 'underscore.js'),
-        path.join(JSPATH, 'backbone.js'),
-        path.join(JSPATH, 'backbone.paginator.js'),
-        path.join(JSPATH, 'bootstrap.js'),
-        path.join(JSPATH, 'bootstrap-typeahead-improved.js'),
+    JS_LIB_PATH = path.join('js', 'lib')
+    third_js = Bundle(
+        path.join(JS_LIB_PATH, 'json2.js'),
+        path.join(JS_LIB_PATH, 'jquery.js'),
+        path.join(JS_LIB_PATH, 'underscore.js'),
+        path.join(JS_LIB_PATH, 'backbone.js'),
+        path.join(JS_LIB_PATH, 'backbone.paginator.js'),
+        path.join(JS_LIB_PATH, 'bootstrap.js'),
+        path.join(JS_LIB_PATH, 'bootstrap-typeahead-improved.js'),
+        path.join(JS_LIB_PATH, 'date.js'),
     )
 
     #TOOD: add require so we can simplify this
     COFFEE_PATH = 'coffee'
-    coffee = (
+    coffee_js = Bundle(
         path.join(COFFEE_PATH, 'nested.coffee'),
         path.join(COFFEE_PATH, 'app.coffee'),
         path.join(COFFEE_PATH, 'datagrid.coffee'),
@@ -69,13 +70,14 @@ def _bundle_skel(app_path, env, debug=False):
         path.join(COFFEE_PATH, 'channel.coffee'),
         path.join(COFFEE_PATH, 'utils.coffee'),
         path.join(COFFEE_PATH, 'smartbox.coffee'),
+        filters='coffeescript'
     )
 
     all_js = Bundle(
+        third_js,
         Bundle(
             path.join('templates', '**', '*.jst'), filters='jst', debug=False),
-        Bundle(*third_js),
-        Bundle(*coffee, filters='coffeescript'),
+        coffee_js,
         output=path.join(app_path, 'script', 'skel.js'))
 
     env.add(all_js)
@@ -149,7 +151,7 @@ def build(app='', debug=True, cache=True):
     log = _load_logger()
     cmdenv = CommandLineEnvironment(env, log)
 
-    cmdenv.rebuild()
+    cmdenv.build()
 
 def watch(app='', debug=False, cache=False):
     env = _setup_env(app, debug, cache)
@@ -157,4 +159,3 @@ def watch(app='', debug=False, cache=False):
     cmdenv = CommandLineEnvironment(env, log)
 
     cmdenv.watch()
-

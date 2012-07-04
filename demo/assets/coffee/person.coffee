@@ -136,8 +136,6 @@ class App.Demo.View.PersonApp extends App.Skel.View.ModelApp
         @collection = new App.Demo.Collection.PersonList()
         @listView = new App.Demo.View.PersonList(@collection)
 
-        @collection.fetch()
-
 
 class App.Demo.View.PersonListItem extends App.Skel.View.ListItemView
     template: JST['person/list']
@@ -158,8 +156,8 @@ class App.Demo.View.PersonList extends App.Skel.View.ListView
             {
                 name: 'Name'
                 type: 'text'
-                prop: 'name'
-                control: null
+                prop: 'flike_name'
+                control: App.Ui.Datagrid.InputFilter
                 default: true
             })
         )

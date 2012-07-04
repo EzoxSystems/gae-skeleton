@@ -1,32 +1,18 @@
 <div class="row-fluid container-fluid">
-    <div class="span6">
+    <div class="span12">
         <fieldset>
-            <div id="filters"></div>
-            <div class="control-group">
-                <label for="add_optional" class="control-label"></label>
+            <div class="filters"></div>
+            <div class="optional-controls control-group">
                 <div class="controls">
-                    <select id="filter_options" style="display: none"></select>
-                    <button id="add_optional" style="display: none" class="btn btn-small btn-primary">Add Filter</button>
+                    <select class="filter_options" ></select>
+                    <button class="add-optional btn btn-small btn-primary">Add Filter</button>
+                </div>
+            </div>
+            <div class="filter-controls control-group">
+                <div class="controls">
+                    <button class="btn btn-inverse filter-button" type="submit">View</button>
                 </div>
             </div>
         </fieldset>
-    </div>
-    <div class="row-fluid span4">
-        <div class="control-group">
-            <label for="grid_size" class="control-label">Number of Items:</label>
-            <div class="controls">
-                <select id="grid_size" style="width: 80px">
-                    <option value="10">10</option>
-                    <option value="25" selected="selected">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="200">200</option>
-                    <option value="500">500</option>
-                </select>
-            </div>
-        </div>
-    </div>
-    <div class="span2">
-        <button id="filter_button" class="btn btn-inverse" style="float-right" type="submit">View</button>
     </div>
 </div>

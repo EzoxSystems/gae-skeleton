@@ -40,7 +40,8 @@ class PersonListHandler(rest_handler.RestApiListHandler):
     def __init__(self, request=None, response=None):
         from demo.person import Person
         from demo.person import person_schema
+        from demo.person import person_query_schema
 
         super(PersonListHandler, self).__init__(
-            Person, person_schema, request, response)
-
+            Person, person_schema, request, response,
+            query_schema=person_query_schema)

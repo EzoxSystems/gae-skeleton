@@ -191,8 +191,11 @@ class App.Skel.View.EditView extends Backbone.View
 class App.Skel.View.ListView extends Backbone.View
     className: "view container-fluid well"
     template: JST['ui/grid/view']
+    footer_template: JST['ui/grid/size_select']
     itemView: null
     headerView: null
+    gridFilters: null
+    filter: null
 
     initialize: (collection) =>
         @collection = collection
@@ -207,10 +210,28 @@ class App.Skel.View.ListView extends Backbone.View
             @$("table.table").prepend(new @headerView().render().el)
 
         if @gridFilters
-            filter = new App.Ui.Datagrid.GridView(@gridFilters, @collection)
-            @$("#gridfilters").html(filter.render().el)
+            @filter = new App.Ui.Datagrid.GridView({
+                gridFilters: @gridFilters
+                collection: @collection
+                id: @cid
+            })
+            @$("div.gridfilters").html(@filter.render().el)
+            @$("div.gridFooter").html(@footer_template())
+            App.Skel.Event.bind("filter:run:#{@filter.cid}", @run, this)
+
+            @filter.runFilter()
 
         return this
+
+    run: (filters) =>
+        @collection.server_api = {
+            limit: @$("div.gridFooter > .size-select").val() ? 25
+        }
+        _.extend(@collection.server_api, filters)
+
+        @collection.fetch()
+
+        return false
 
     addOne: (object) =>
         if @itemView
@@ -224,6 +245,10 @@ class App.Skel.View.ListView extends Backbone.View
         @$(".listitems").html('')
         @addAll()
 
+    onClose: =>
+        App.Skel.Event.unbind("filter:run:#{@filter.cid}", null, this)
+
+        @filter.close()
 
 class App.Skel.View.ListItemView extends Backbone.View
     tagName: "tr"
@@ -244,7 +269,9 @@ class App.Skel.View.ListItemView extends Backbone.View
         App.Skel.Event.trigger("model:edit", @model, this)
 
     delete: =>
-        @model.destroy()
+        proceed = confirm('Are you sure you want to delete?  This can not be undone.')
+        if proceed
+            @model.destroy()
 
 
 class App.Skel.View.ListItemHeader extends Backbone.View
