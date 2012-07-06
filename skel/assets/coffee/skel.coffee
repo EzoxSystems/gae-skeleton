@@ -246,9 +246,9 @@ class App.Skel.View.ListView extends Backbone.View
         @addAll()
 
     onClose: =>
-        App.Skel.Event.unbind("filter:run:#{@filter.cid}", null, this)
-
-        @filter.close()
+        if @filter
+            App.Skel.Event.unbind("filter:run:#{@filter.cid}", null, this)
+            @filter.close()
 
 class App.Skel.View.ListItemView extends Backbone.View
     tagName: "tr"
