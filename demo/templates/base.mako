@@ -22,24 +22,22 @@
         </div>
       </div>
     </div>
-        <div id="demo">
-            <div id="democontainer" class="container">
-            </div>
-        </div
-        </div>
-        <div class="footer">
-          <center><strong>View the source at:</strong> <a href="https://github.com/ezoxsystems/gae-skeleton">https://github.com/ezoxsystems/gae-skeleton</a></center>
-        </div>
-        <script type="application/javascript" src="/static/script/libs.js"></script>
-        <script type="application/javascript" src="/static/script/template.js"></script>
-        <script type="application/javascript" src="/static/script/skel.js"></script>
-        <script type="application/javascript" src="/static/script/demo.js"></script>
-        <script type="text/javascript">
-        $(function(){
-            var demo = new App.Demo.Router
-            Backbone.history.start();
-            App.Demo.router = demo;
-        });
-        </script>
-    </body>
+    <div id="demo">
+        <div id="democontainer" class="container"></div>
+    </div>
+    <div class="footer">
+      <center><strong>View the source at:</strong> <a href="https://github.com/ezoxsystems/gae-skeleton">https://github.com/ezoxsystems/gae-skeleton</a></center>
+    </div>
+    <script type="application/javascript" src="/static/script/libs.js"></script>
+    <script type="application/javascript" src="/static/script/template.js"></script>
+    <script type="application/javascript" src="/static/script/skel.js"></script>
+    <script type="application/javascript" src="/static/script/demo.js"></script>
+    <script type="text/javascript">
+    $(function(){
+        var demo = new App.Demo.Router
+        Backbone.history.start();
+        App.Demo.router = demo;
+    });
+    </script>
+  </body>
 </html>
