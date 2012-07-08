@@ -14,14 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ###
 
-Backbone.View.prototype.close = (() ->
-    @remove()
-    @unbind()
-    App.Skel.Event.trigger('closing', this)
-    @off()
+Backbone.View::close = ->
     if @onClose
         @onClose()
-)
+    @unbind()
+    @off()
+    App.Skel.Event.trigger('closing', this)
+    @remove()
+
 
 window.App = (() ->
     module: (() ->
@@ -47,4 +47,3 @@ window.App = (() ->
 
     Ui: {}
 )()
-
