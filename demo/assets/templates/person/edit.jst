@@ -1,10 +1,4 @@
-<div class="row-fluid status-bar" >
-    <div class="alert alert-success" style="display: none">
-        <button class="close" data-dismiss="alert">&times;</button>
-        <strong> Success! </strong> Person saved successfully
-    </div>
-</div>
-<form class="edit containter-fluid well form-horizontal">
+<form class="edit containter-fluid well form-horizontal" autocomplete="off">
     <div class="row-fluid">
         <div id="editheadercontainer" class="modal-header">
             <h3 id="editheader">Person<h3>
@@ -14,7 +8,7 @@
                 <div class="control-group">
                     <label for="name" class="control-label">Name:</label>
                     <div class="controls">
-                        <input id="name" name="name" type="text" value="<%= name %>" 
+                        <input id="name" name="name" type="text" value="<%= name %>"
                             class="name" placeholder="Name..." />
                     </div>
                 </div>
