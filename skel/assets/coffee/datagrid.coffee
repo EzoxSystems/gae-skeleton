@@ -88,7 +88,7 @@ class App.Ui.Datagrid.GridView extends Backbone.View
     runFilter: (e) =>
         filters = {}
         for prop, view of @views
-            filters = _.extend(filters, view.addFilter(@collection.server_api))
+            filters = _.extend(filters, view.addFilter(filters))
 
         App.Skel.Event.trigger("filter:run:#{@.cid}", filters)
 
