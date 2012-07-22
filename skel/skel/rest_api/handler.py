@@ -177,6 +177,7 @@ class RestQueryFilters(object):
     def __init__(self):
         self.filters = {
             'eq': self._add_equality_filter,
+            'neq': self._add_inequality_filter,
             'like': self._add_like_filter,
             'gt': self._add_greater_than_filter,
         }
@@ -190,6 +191,9 @@ class RestQueryFilters(object):
 
     def _add_equality_filter(self, query, filter_property, val):
         return query.filter(filter_property == val)
+
+    def _add_inequality_filter(self, query, filter_property, val):
+        return query.filter(filter_property != val)
 
     def _add_like_filter(self, query, filter_property, val):
         query = query.filter(filter_property >= val)
